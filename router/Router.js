@@ -9,6 +9,7 @@ import { PanierScreen } from "../pages/Panier";
 import { getItem } from "../store/store.native";
 import { View, Text, ActivityIndicator } from "react-native";
 import { Login } from "../pages/Auth";
+import { Home } from "@carbon/icons-react";
 
 const Tab = createBottomTabNavigator();
 
@@ -49,6 +50,7 @@ export function Router() {
 
             if (route.name === "Home") {
               iconName = focused ? "home" : "home-outline";
+              //return <Home />;
             } else if (route.name === "Panier") {
               iconName = focused ? "cart" : "cart-outline";
             } else if (route.name === "Commande") {
@@ -95,7 +97,8 @@ export function Router() {
 
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        {/* <ActivityIndicator size="large" color="#0000ff" /> */}
+        <Text>Waiting</Text>
       </View>
     );
   }

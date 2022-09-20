@@ -9,7 +9,8 @@ export function CompteScreen({ navigation }) {
   React.useEffect(() => {
     getItem("user").then((user) => {
       if (!user) {
-        navigation.navigate("Waiting");
+        // navigation.navigate("Waiting");
+        return;
       }
       let parsed = JSON.parse(user);
       setUser(parsed);
@@ -23,7 +24,6 @@ export function CompteScreen({ navigation }) {
         <>
           <Button
             onPress={() => {
-              console.log("Log out");
               navigation.navigate("Login");
               removeItem("user", null);
             }}

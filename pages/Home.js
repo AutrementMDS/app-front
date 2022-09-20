@@ -2,6 +2,7 @@ import * as React from "react";
 import { Text, View } from "react-native";
 import { Button } from "react-native-paper";
 import { getUsers, register } from "../modules/database";
+import { Home } from "@carbon/icons-react";
 
 export function HomeScreen({ navigation }) {
   // React.useEffect(() => {
@@ -14,6 +15,7 @@ export function HomeScreen({ navigation }) {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text>Home</Text>
+      <Home />
       <Button
         onPress={() => {
           navigation.navigate("Panier");
