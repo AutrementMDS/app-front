@@ -2,6 +2,7 @@ import * as React from "react";
 import { Text, View } from "react-native";
 import { Button } from "react-native-paper";
 import { getUsers, register } from "../modules/database";
+import { Home } from "@carbon/icons-react";
 
 export function HomeScreen({ navigation }) {
   // React.useEffect(() => {
