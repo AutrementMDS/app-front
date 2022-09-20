@@ -9,7 +9,6 @@ import { PanierScreen } from "../pages/Panier";
 import { getItem } from "../store/store.native";
 import { View, Text, ActivityIndicator } from "react-native";
 import { Login } from "../pages/Auth";
-import { Home } from "@carbon/icons-react";
 
 const Tab = createBottomTabNavigator();
 
@@ -42,6 +41,15 @@ export function Router() {
         initialRouteName={defaultRoute}
         backBehavior="initialRoute"
         screenOptions={({ route }) => ({
+          // tabBarItemStyle: { padding: 0, margin: 0, borderRadius: 10 },
+          tabBarStyle: {
+            margin: 15,
+            borderRadius: 15,
+            padding: 0,
+            position: "absolute",
+            elevation: 6,
+            overflow: "hidden",
+          },
           tabBarLabel: ({ focused, color, size }) => {
             return false;
           },
@@ -49,20 +57,39 @@ export function Router() {
             let iconName;
 
             if (route.name === "Home") {
-              iconName = focused ? "home" : "home-outline";
-              //return <Home />;
+              // iconName = focused ? "home" : "home-outline";
+              iconName = "home-outline";
             } else if (route.name === "Panier") {
-              iconName = focused ? "cart" : "cart-outline";
+              // iconName = focused ? "cart" : "cart-outline";
+              iconName = "cart-outline";
             } else if (route.name === "Commande") {
-              iconName = focused ? "list" : "list-outline";
+              // iconName = focused ? "list" : "list-outline";
+              iconName = "list-outline";
             } else if (route.name === "Compte") {
-              iconName = focused ? "person" : "person-outline";
+              // iconName = focused ? "person" : "person-outline";
+              iconName = "person-outline";
             }
 
-            return <Ionicons name={iconName} size={size} color={color} />;
+            return (
+              <View
+                style={{
+                  paddingTop: 12,
+                  paddingBottom: 12,
+                  paddingLeft: 30,
+                  paddingRight: 30,
+                  backgroundColor:
+                    color == "primary" ? "#F2F2F2" : "transparent",
+                  borderRadius: 15,
+                  transition: "all 0.2s ease-in-out",
+                  elevation: color == "primary" ? 1.5 : 0,
+                }}
+              >
+                <Ionicons name={iconName} size={size} color={color} />
+              </View>
+            );
           },
           tabBarActiveTintColor: "primary",
-          tabBarInactiveTintColor: "gray",
+          tabBarInactiveTintColor: "black",
         })}
       >
         <Tab.Screen

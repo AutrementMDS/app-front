@@ -2,6 +2,7 @@ const { default: axios } = require("axios");
 
 module.exports = {
   getUsers,
+  getProducts,
   login,
   register,
 };
@@ -19,7 +20,20 @@ async function getUsers() {
   return 0;
 }
 
-export async function login(mail, password, cb) {
+async function getProducts(jwt) {
+  return await axios
+    .get(baseURL + "products", {
+      headers: { Authorization: "Bearer " + jwt },
+    })
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+async function login(mail, password, cb) {
   axios
     .post(baseURL + "auth/local", {
       identifier: mail,
@@ -41,7 +55,7 @@ export async function login(mail, password, cb) {
     });
 }
 
-export async function register(username, mail, password, cb) {
+async function register(username, mail, password, cb) {
   axios
     .post(baseURL + "auth/local/register", {
       username: username,
