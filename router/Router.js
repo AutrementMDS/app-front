@@ -41,8 +41,8 @@ export function Router() {
         initialRouteName={defaultRoute}
         backBehavior="initialRoute"
         screenOptions={({ route }) => ({
-          // tabBarItemStyle: { padding: 0, margin: 0, borderRadius: 10 },
           tabBarStyle: {
+            height: 60,
             margin: 15,
             borderRadius: 15,
             padding: 0,
@@ -57,26 +57,23 @@ export function Router() {
             let iconName;
 
             if (route.name === "Home") {
-              // iconName = focused ? "home" : "home-outline";
               iconName = "home-outline";
             } else if (route.name === "Panier") {
-              // iconName = focused ? "cart" : "cart-outline";
               iconName = "cart-outline";
             } else if (route.name === "Commande") {
-              // iconName = focused ? "list" : "list-outline";
               iconName = "list-outline";
             } else if (route.name === "Compte") {
-              // iconName = focused ? "person" : "person-outline";
               iconName = "person-outline";
             }
 
             return (
               <View
                 style={{
-                  paddingTop: 12,
-                  paddingBottom: 12,
-                  paddingLeft: 30,
-                  paddingRight: 30,
+                  display: "flex",
+                  height: "100%",
+                  width: "100%",
+                  justifyContent: "center",
+                  alignItems: "center",
                   backgroundColor:
                     color == "primary" ? "#F2F2F2" : "transparent",
                   borderRadius: 15,
