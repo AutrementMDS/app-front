@@ -7,7 +7,8 @@ module.exports = {
   register,
 };
 
-const baseURL = "https://bca5-212-106-119-45.eu.ngrok.io/";
+//const baseURL = "https://be23-212-106-119-45.eu.ngrok.io/";
+const baseURL = "http:172.24.232.115:1337/";
 
 async function getUsers() {
   await axios

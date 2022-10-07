@@ -1,37 +1,40 @@
 import * as React from "react";
-import { Text, View, Image, StyleSheet, TouchableOpacity } from "react-native";
-import logo from "../assets/logo/Logo_carré.png";
-
-const Separator = () => <View style={styles.separator} />;
-const SeparatorText = () => <View style={styles.separatorText} />;
+import {
+  Text,
+  View,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Button,
+  Dimensions,
+  Pressable,
+} from "react-native";
+import logo from "../assets/logo/Logo_carre.png";
 
 export function LandingPageScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.column}>
-        <Separator />
-        <View style={{ alignItems: "center" }}>
-          <Image source={logo} style={{ width: 339, height: 259 }} />
+        <View>
+          <Image source={logo} style={styles.image} />
         </View>
-        <SeparatorText />
         <View>
           <Text style={[styles.text, { textAlign: "left" }]}>
             Commencez à consommer local autrement.
           </Text>
         </View>
-        <SeparatorText />
         <View>
           <Text style={[styles.text, { textAlign: "right" }]}>
             Soutenez les producteurs français près de chez vous.
           </Text>
         </View>
-        <Separator />
         <View style={{ alignItems: "center" }}>
-          <Button
+          <Pressable
             onPress={() => navigation.navigate("Home")}
             style={styles.btn}
-            title="Commencer"
-          ></Button>
+          >
+            <Text style={styles.btnText}>Commencer</Text>
+          </Pressable>
         </View>
       </View>
     </View>
@@ -39,15 +42,25 @@ export function LandingPageScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  image: {
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height / 4,
+    resizeMode: "contain",
+    alignSelf: "center",
+  },
   container: {
     flex: 1,
     backgroundColor: "#E1E7DF",
   },
   column: {
     margin: 15,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-evenly",
+    height: Dimensions.get("window").height,
   },
   text: {
-    fontSize: 36,
+    fontSize: 28,
     color: "#7E8B78",
     marginLeft: 5,
     marginRight: 5,

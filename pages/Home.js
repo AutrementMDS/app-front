@@ -11,6 +11,8 @@ import { Card } from "react-native-paper";
 import { getProducts, getUsers, register } from "../modules/database";
 import { getItem } from "../store/store.native";
 import carrots from "../assets/images/carrots.jpg";
+import { Page } from "../components/Page";
+import { HomeHeader } from "../components/home/HomeHeader";
 
 export function HomeScreen({ navigation }) {
   const [products, setProducts] = React.useState([]);
@@ -44,19 +46,21 @@ export function HomeScreen({ navigation }) {
   };
 
   return (
-    <View>
+    <Page>
+      <HomeHeader />
       <FlatList
         data={products}
         renderItem={cardsItem}
         keyExtractor={(item) => item.id}
       />
-    </View>
+    </Page>
   );
 }
 
 const styles = StyleSheet.create({
   cardContainer: {
-    margin: 15,
+    marginBottom: 7,
+    marginTop: 7,
     elevation: 1,
     height: 200,
     borderRadius: 5,

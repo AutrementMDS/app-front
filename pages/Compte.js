@@ -14,7 +14,7 @@ export function CompteScreen({ navigation }) {
       }
       let parsed = JSON.parse(user);
       setUser(parsed);
-      navigation.setOptions({ title: parsed?.username ?? "" });
+      //  navigation.setOptions({ title: parsed?.username ?? "" });
     });
   }, [user]);
 
