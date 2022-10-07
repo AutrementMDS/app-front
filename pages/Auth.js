@@ -7,7 +7,7 @@ import { getItem, setItem } from "../store/store.native";
 
 export function Login({ navigation }) {
   const [username, setUsername] = React.useState("test");
-  const [password, setPassword] = React.useState("Azerty123.");
+  const [password, setPassword] = React.useState("Azerty123");
 
   function checkLogin() {
     login(username, password, (res) => {
