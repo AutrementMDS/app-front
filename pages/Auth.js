@@ -1,6 +1,7 @@
 import * as React from "react";
-import { View, Text } from "react-native";
-import { Button, TextInput } from "react-native-paper";
+import { View, StyleSheet, Dimensions } from "react-native";
+import { Button } from "react-native-paper";
+import { CustomButton, CustomInput } from "../components/CustomButton";
 import { login } from "../modules/database";
 import { getItem, setItem } from "../store/store.native";
 
@@ -9,9 +10,6 @@ export function Login({ navigation }) {
   const [password, setPassword] = React.useState("Azerty123.");
 
   function checkLogin() {
-    console.log("login");
-    console.log(username);
-    console.log(password);
     login(username, password, (res) => {
       if (res.status == 200) {
         setItem("user", JSON.stringify(res.data));
@@ -20,49 +18,110 @@ export function Login({ navigation }) {
     });
   }
 
+  function goToRegister() {
+    navigation.navigate("Register");
+  }
+
   return (
-    <View
-      style={{
-        flexDirection: "column",
-        padding: 30,
-        justifyContent: "center",
-      }}
-    >
-      <StyledTextInput controller={setUsername} placeholder="Username" />
-      <StyledTextInput controller={setPassword} placeholder="Password" />
-      <Button onPress={() => checkLogin()}>Valider</Button>
+    <View style={styles.page}>
+      <View style={styles.container}>
+        <View>
+          <CustomInput
+            controller={setUsername}
+            type="text"
+            placeholder="Username"
+          />
+          <CustomInput
+            controller={setPassword}
+            type="password"
+            placeholder="Password"
+          />
+        </View>
+
+        <View>
+          <CustomButton
+            type="primary"
+            text="Valider"
+            onPress={() => checkLogin()}
+          ></CustomButton>
+
+          <CustomButton
+            type="secondary"
+            text="Créer un compte"
+            onPress={() => goToRegister()}
+          ></CustomButton>
+        </View>
+      </View>
     </View>
   );
 }
 
-export function Register() {
+export function Register({ navigation }) {
+  const [username, setUsername] = React.useState("test");
+  const [password, setPassword] = React.useState("Azerty123.");
+
+  function goToLogin() {
+    navigation.navigate("Login");
+  }
+
+  function goToLanding() {
+    navigation.navigate("LandingPage");
+  }
+
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <input></input>
-      <input></input>
-      <input></input>
+    <View style={styles.page}>
+      <View style={styles.container}>
+        <View>
+          <CustomInput controller={setUsername} type="text" placeholder="Nom" />
+          <CustomInput
+            controller={setUsername}
+            type="text"
+            placeholder="Prénom"
+          />
+          <CustomInput
+            controller={setUsername}
+            type="text"
+            placeholder="Email"
+          />
+          <CustomInput
+            controller={setPassword}
+            type="text"
+            placeholder="Téléphone"
+          />
+          <CustomInput
+            controller={setPassword}
+            type="password"
+            placeholder="Mot de passe"
+          />
+        </View>
+
+        <View>
+          <CustomButton
+            type="primary"
+            text="Valider"
+            onPress={() => goToLanding()}
+          ></CustomButton>
+
+          <CustomButton
+            type="secondary"
+            text="Se connecter"
+            onPress={() => goToLogin()}
+          ></CustomButton>
+        </View>
+      </View>
     </View>
   );
 }
 
-export function StyledTextInput(props) {
-  const [textInputValue, setTextInputValue] = React.useState("");
-
-  return (
-    <TextInput
-      style={{
-        height: 40,
-        borderColor: "gray",
-        borderWidth: 1,
-        placeholderTextColor: "gray",
-        backgroundColor: "transparent",
-      }}
-      onChangeText={(text) => {
-        setTextInputValue(text);
-        props.controller(text);
-      }}
-      value={textInputValue}
-      placeholder={props.placeholder}
-    />
-  );
-}
+const styles = StyleSheet.create({
+  page: {
+    backgroundColor: "#FAFAFA",
+    flex: 1,
+  },
+  container: {
+    flex: 1,
+    padding: 20,
+    display: "flex",
+    justifyContent: "space-between",
+  },
+});

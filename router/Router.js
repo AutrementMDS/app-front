@@ -8,7 +8,8 @@ import { CompteScreen } from "../pages/Compte";
 import { PanierScreen } from "../pages/Panier";
 import { getItem } from "../store/store.native";
 import { View, Text, ActivityIndicator } from "react-native";
-import { Login } from "../pages/Auth";
+import { Login, Register } from "../pages/Auth";
+import { LandingPageScreen } from "../pages/LandingPage";
 
 const Tab = createBottomTabNavigator();
 
@@ -42,9 +43,9 @@ export function Router() {
         backBehavior="initialRoute"
         screenOptions={({ route }) => ({
           tabBarStyle: {
-            height: 60,
-            margin: 15,
-            borderRadius: 15,
+            height: 55,
+            margin: 20,
+            borderRadius: 200,
             padding: 0,
             position: "absolute",
             elevation: 6,
@@ -70,18 +71,22 @@ export function Router() {
               <View
                 style={{
                   display: "flex",
-                  height: "100%",
-                  width: "100%",
+                  height: "80%",
+                  width: "80%",
                   justifyContent: "center",
                   alignItems: "center",
                   backgroundColor:
-                    color == "primary" ? "#F2F2F2" : "transparent",
-                  borderRadius: 15,
+                    color == "primary" ? "#40693E" : "transparent",
+                  borderRadius: 100,
                   transition: "all 0.2s ease-in-out",
                   elevation: color == "primary" ? 1.5 : 0,
                 }}
               >
-                <Ionicons name={iconName} size={size} color={color} />
+                <Ionicons
+                  name={iconName}
+                  size={20}
+                  color={focused ? "white" : "black"}
+                />
               </View>
             );
           },
@@ -94,15 +99,41 @@ export function Router() {
           component={WaitingContainer}
           options={{ headerShown: false, ...hiddenTab }}
         ></Tab.Screen>
-        <Tab.Screen name="Login" component={Login} options={hiddenTab} />
+        <Tab.Screen
+          name="LandingPage"
+          component={LandingPageScreen}
+          options={{ headerShown: false, ...hiddenTab }}
+        ></Tab.Screen>
+        <Tab.Screen
+          name="Login"
+          component={Login}
+          options={{ title: "Se connecter", ...hiddenTab }}
+        />
+        <Tab.Screen
+          name="Register"
+          component={Register}
+          options={{ title: "Créer un compte", ...hiddenTab }}
+        />
         <Tab.Screen
           name="Home"
           component={HomeScreen}
           options={{ headerShown: false }}
         />
-        <Tab.Screen name="Panier" component={PanierScreen} />
-        <Tab.Screen name="Commande" component={CommandeScreen} />
-        <Tab.Screen name="Compte" component={CompteScreen} />
+        <Tab.Screen
+          name="Panier"
+          component={PanierScreen}
+          options={{ title: "Mon panier" }}
+        />
+        <Tab.Screen
+          name="Commande"
+          component={CommandeScreen}
+          options={{ title: "Mes commandes" }}
+        />
+        <Tab.Screen
+          name="Compte"
+          component={CompteScreen}
+          options={{ title: "Mon Compte" }}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );
@@ -121,8 +152,7 @@ export function Router() {
 
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        {/* <ActivityIndicator size="large" color="#0000ff" /> */}
-        <Text>Waiting</Text>
+        <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
   }
