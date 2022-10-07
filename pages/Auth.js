@@ -11,6 +11,7 @@ export function Login({ navigation }) {
 
   function checkLogin() {
     login(username, password, (res) => {
+      console.log(res);
       if (res.status == 200) {
         setItem("user", JSON.stringify(res.data));
         navigation.navigate("Home");

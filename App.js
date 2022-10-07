@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Router } from "./router/Router";
 import { useFonts } from "expo-font";
-import { ProduitDetailScreen } from "./pages/ProduitDetail";
 
 export default function App() {
   const [loaded] = useFonts({
