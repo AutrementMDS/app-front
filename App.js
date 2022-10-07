@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Router } from "./router/Router";
 import { useFonts } from "expo-font";
+import { ProduitDetailScreen } from "./pages/ProduitDetail";
 
 export default function App() {
   const [loaded] = useFonts({
@@ -14,7 +15,7 @@ export default function App() {
     NunitoR: require('./assets/fonts/Nunito/Nunito-Regular.ttf'),
   });
 
-  return <Router></Router>;
+  return <ProduitDetailScreen></ProduitDetailScreen>;
 }
 // db.createUser({
 //   user: "myUserAdmin",
