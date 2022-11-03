@@ -70,6 +70,7 @@ export const ProduitDetail = ({ route, navigation }) => {
         </View>
       </Card>
     </View>
+    </Page>
   );
 };
 const styles = StyleSheet.create({
@@ -115,6 +116,18 @@ const styles = StyleSheet.create({
     width: null,
     height: null,
     resizeMode: "cover",
+  },
+  bgimage: {
+    width: "100%",
+    resizeMode: "contain",
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderWidth: 2,
+    borderRadius: 75
   },
   info: {
     display: "flex",

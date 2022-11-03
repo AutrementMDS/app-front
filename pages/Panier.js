@@ -115,6 +115,12 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+  },
+  flex: {
+    flex: 1,
+    display: "flex",
+    justifyContent: "space-between",
   },
   name: {
     fontSize: 25,
