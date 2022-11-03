@@ -46,7 +46,7 @@ export const HomeScreen = ({ navigation }) => {
 
         for (let product of products) {
           promises.push(
-            getProductsReview(parsedUser.jwt, product._id).then((review) => {
+            getProductsReview(parsedUser.jwt, product.id).then((review) => {
               product.review = review;
             })
           );
@@ -186,30 +186,36 @@ export const HomeScreen = ({ navigation }) => {
     return (
       <View>
         {index == 0 && <CategoriesList />}
-        <Card style={styles.cardContainer}>
-          <View
-            style={{
-              height: Dimensions.get("window").height / 4,
-            }}
-          >
-            <Image source={{ uri: item.image }} style={styles.image}></Image>
-          </View>
-          <View style={styles.info}>
-            <View>
-              <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.price}>
-                {parseInt(item.price).toFixed(2)}€ /{" "}
-                {item.pricetype.name.charAt(0).toUpperCase() +
-                  item.pricetype.name.slice(1)}
-              </Text>
+        <Pressable
+          onPress={() => {
+            navigation.navigate("ProduitDetail", { product: item });
+          }}
+        >
+          <Card style={styles.cardContainer}>
+            <View
+              style={{
+                height: Dimensions.get("window").height / 4,
+              }}
+            >
+              <Image source={{ uri: item.image }} style={styles.image}></Image>
             </View>
-            <View style={styles.noteContainer}>
-              <Text style={styles.note}>
-                {item.review == -1 ? "-" : parseFloat(item.review).toFixed(1)}
-              </Text>
+            <View style={styles.info}>
+              <View>
+                <Text style={styles.name}>{item.name}</Text>
+                <Text style={styles.price}>
+                  {parseInt(item.price).toFixed(2)}€ /{" "}
+                  {item.pricetype.data.attributes.name.charAt(0).toUpperCase() +
+                    item.pricetype.data.attributes.name.slice(1)}
+                </Text>
+              </View>
+              <View style={styles.noteContainer}>
+                <Text style={styles.note}>
+                  {item.review == -1 ? "-" : parseFloat(item.review).toFixed(1)}
+                </Text>
+              </View>
             </View>
-          </View>
-        </Card>
+          </Card>
+        </Pressable>
       </View>
     );
   };

@@ -23,18 +23,16 @@ export function CustomButton(props) {
 }
 
 export function CustomInput(props) {
-  const [textInputValue, setTextInputValue] = React.useState("");
-
   return (
     <TextInput
       secureTextEntry={props.type == "password" ? true : false}
-      style={styles.textInput}
+      style={{ ...styles.textInput, ...(props.style || {}) }}
       onChangeText={(text) => {
-        setTextInputValue(text);
         props.controller(text);
       }}
-      value={textInputValue}
+      value={props.value}
       placeholder={props.placeholder}
+      keyboardType={props.type}
     />
   );
 }

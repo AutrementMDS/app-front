@@ -1,21 +1,23 @@
 import * as React from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
+import { View, StyleSheet, Dimensions, Text } from "react-native";
 import { Button } from "react-native-paper";
 import { CustomButton, CustomInput } from "../components/CustomButton";
-import { login } from "../modules/database";
+import { login, register } from "../modules/database";
 import { getItem, setItem } from "../store/store.native";
 
 export function Login({ navigation }) {
-  const [username, setUsername] = React.useState("test");
-  const [password, setPassword] = React.useState("Azerty123.");
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [error, setError] = React.useState("");
 
-  function checkLogin() {
-    login(username, password, (res) => {
-      if (res.status == 200) {
-        setItem("user", JSON.stringify(res.data));
-        navigation.navigate("Home");
-      }
-    });
+  async function checkLogin() {
+    let res = await login(username, password);
+    if (res.status == 200) {
+      setItem("user", JSON.stringify(res.data));
+      navigation.navigate("Home");
+    } else {
+      setError(res.error);
+    }
   }
 
   function goToRegister() {
@@ -30,12 +32,15 @@ export function Login({ navigation }) {
             controller={setUsername}
             type="text"
             placeholder="Username"
+            value={username}
           />
           <CustomInput
             controller={setPassword}
             type="password"
             placeholder="Password"
+            value={password}
           />
+          {error !== "" && <Text style={styles.error}>{error}</Text>}
         </View>
 
         <View>
@@ -57,8 +62,10 @@ export function Login({ navigation }) {
 }
 
 export function Register({ navigation }) {
-  const [username, setUsername] = React.useState("test");
-  const [password, setPassword] = React.useState("Azerty123.");
+  const [username, setUsername] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [error, setError] = React.useState("");
 
   function goToLogin() {
     navigation.navigate("Login");
@@ -68,38 +75,54 @@ export function Register({ navigation }) {
     navigation.navigate("LandingPage");
   }
 
+  async function checkRegister() {
+    let res = await register(username, email, password);
+    console.log(res);
+    if (res.status == 200) {
+      setItem("user", JSON.stringify(res.data));
+      console.log(res.data);
+      navigation.navigate("LandingPage");
+    } else {
+      setError(res.error);
+    }
+  }
+
   return (
     <View style={styles.page}>
       <View style={styles.container}>
         <View>
-          <CustomInput controller={setUsername} type="text" placeholder="Nom" />
+          {/* <CustomInput controller={setUsername} type="text" placeholder="Nom" /> */}
           <CustomInput
             controller={setUsername}
             type="text"
             placeholder="Prénom"
+            value={username}
           />
           <CustomInput
-            controller={setUsername}
+            controller={setEmail}
             type="text"
             placeholder="Email"
+            value={email}
           />
-          <CustomInput
+          {/* <CustomInput
             controller={setPassword}
             type="text"
             placeholder="Téléphone"
-          />
+          /> */}
           <CustomInput
             controller={setPassword}
             type="password"
             placeholder="Mot de passe"
+            value={password}
           />
+          {error !== "" && <Text style={styles.error}>{error}</Text>}
         </View>
 
         <View>
           <CustomButton
             type="primary"
             text="Valider"
-            onPress={() => goToLanding()}
+            onPress={() => checkRegister()}
           ></CustomButton>
 
           <CustomButton
@@ -123,5 +146,11 @@ const styles = StyleSheet.create({
     padding: 20,
     display: "flex",
     justifyContent: "space-between",
+  },
+  error: {
+    borderRadius: 5,
+    marginTop: 10,
+    backgroundColor: "#ffa4a4",
+    padding: 10,
   },
 });

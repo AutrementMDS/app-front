@@ -1,17 +1,102 @@
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { HomeScreen } from "../pages/Home";
 import { CommandeScreen } from "../pages/Commande";
 import { CompteScreen } from "../pages/Compte";
 import { PanierScreen } from "../pages/Panier";
-import { getItem } from "../store/store.native";
-import { View, Text, ActivityIndicator } from "react-native";
+import { getItem, setItem } from "../store/store.native";
+import { View, Text, ActivityIndicator, Pressable } from "react-native";
 import { Login, Register } from "../pages/Auth";
 import { LandingPageScreen } from "../pages/LandingPage";
+import { ProduitDetail } from "../pages/ProduitDetail";
+import { Button, Icon } from "react-native";
+import { IconButton, MD3Colors } from "react-native-paper";
+import { AddToPanier } from "../pages/AddToPanier";
 
 const Tab = createBottomTabNavigator();
+
+const hiddenTab = {
+  tabBarStyle: { display: "none" },
+  tabBarIconStyle: { display: "none" },
+  tabBarButton: () => null,
+  tabBarVisible: false,
+};
+
+const HomeStack = createStackNavigator();
+function HomeStackScreen() {
+  return (
+    <HomeStack.Navigator>
+      <HomeStack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{ headerShown: false }}
+      />
+      <HomeStack.Screen
+        name="ProduitDetail"
+        component={ProduitDetail}
+        options={({ route, navigation }) => ({
+          title: route.params?.product?.name || "",
+          ...hiddenTab,
+          headerRight: () => (
+            <IconButton
+              icon="cart-plus"
+              size={25}
+              color={"#40693E"}
+              onPress={() =>
+                navigation.navigate("AddToPanier", {
+                  product: route.params?.product,
+                })
+              }
+              animated={true}
+            />
+          ),
+        })}
+      />
+      <HomeStack.Screen
+        name="AddToPanier"
+        component={AddToPanier}
+        options={({ route, navigation }) => ({
+          title: route.params?.product?.name || "",
+          ...hiddenTab,
+          headerRight: () => (
+            <IconButton
+              icon="check"
+              size={25}
+              color={"white"}
+              onPress={async () => {
+                getItem("actualItem").then((item) => {
+                  getItem("panier").then((panier) => {
+                    if (panier) {
+                      panier = JSON.parse(panier);
+                      panier.push(item);
+                      setItem("panier", JSON.stringify(panier));
+                    } else {
+                      let np = [];
+                      np.push(item);
+                      setItem("panier", JSON.stringify(np));
+                    }
+
+                    navigation.popToTop();
+                    navigation.navigate("Panier", {
+                      paramPropKey: "paramPropValue",
+                    });
+                  });
+                });
+              }}
+              style={{
+                backgroundColor: "#40693E",
+              }}
+              animated={true}
+            />
+          ),
+        })}
+      />
+    </HomeStack.Navigator>
+  );
+}
 
 export function Router() {
   const [authState, setAuthState] = React.useState("waiting");
@@ -28,13 +113,6 @@ export function Router() {
       }
     });
   }, [user]);
-
-  var hiddenTab = {
-    tabBarStyle: { display: "none" },
-    tabBarIconStyle: { display: "none" },
-    tabBarButton: () => null,
-    tabBarVisible: false,
-  };
 
   return (
     <NavigationContainer>
@@ -116,7 +194,7 @@ export function Router() {
         />
         <Tab.Screen
           name="Home"
-          component={HomeScreen}
+          component={HomeStackScreen}
           options={{ headerShown: false }}
         />
         <Tab.Screen

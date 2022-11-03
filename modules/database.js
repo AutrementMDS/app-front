@@ -8,10 +8,14 @@ module.exports = {
   getProductsReview,
   getCategories,
   getProductsByCategory,
+  login,
+  register,
+  getProductById,
 };
 
 //const baseURL = "https://be23-212-106-119-45.eu.ngrok.io/";
-const baseURL = "http://172.24.232.115:1337/";
+//const baseURL = "http://172.24.232.115:1337/";
+const baseURL = "http://51.210.104.99:1556/api/";
 
 async function getUsers() {
   await axios
@@ -24,13 +28,40 @@ async function getUsers() {
   return 0;
 }
 
+function refactorObject(obj) {
+  let nObj = {};
+  nObj.id = obj.id;
+  Object.keys(obj.attributes).map((key) => {
+    nObj[key] = obj.attributes[key];
+  });
+  return nObj;
+}
+
 async function getProducts(jwt) {
   let pro = await axios
-    .get(baseURL + "products", {
+    .get(baseURL + "products?populate=*", {
       headers: { Authorization: "Bearer " + jwt },
     })
     .then((res) => {
-      return res.data;
+      let productsArray = [];
+      res.data.data.forEach((product) => {
+        productsArray.push(refactorObject(product));
+      });
+      return productsArray;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  return pro;
+}
+
+async function getProductById(jwt, id) {
+  let pro = await axios
+    .get(baseURL + "products/" + id + "/?populate=*", {
+      headers: { Authorization: "Bearer " + jwt },
+    })
+    .then((res) => {
+      return refactorObject(res.data.data);
     })
     .catch((err) => {
       console.log(err);
@@ -40,11 +71,16 @@ async function getProducts(jwt) {
 
 async function getProductsByCategory(jwt, cat) {
   let pro = await axios
-    .get(baseURL + "products?category.name=" + cat, {
+    .get(baseURL + "products?populate=*&filters[category][name][$eq]=" + cat, {
       headers: { Authorization: "Bearer " + jwt },
     })
     .then((res) => {
-      return res.data;
+      //return res.data;
+      let productsArray = [];
+      res.data.data.forEach((product) => {
+        productsArray.push(refactorObject(product));
+      });
+      return productsArray;
     })
     .catch((err) => {
       console.log(err);
@@ -53,12 +89,19 @@ async function getProductsByCategory(jwt, cat) {
 }
 
 async function getCategories(jwt) {
+  if (!jwt) return [];
   return await axios
-    .get(baseURL + "categories", {
+    .get(baseURL + "categories?populate=*", {
       headers: { Authorization: "Bearer " + jwt },
     })
     .then((res) => {
-      return res.data;
+      if (res.data) {
+        catArray = [];
+        res.data.data.forEach((cat, index) => {
+          catArray.push({ id: index + 1, name: cat.attributes.name });
+        });
+        return catArray;
+      }
     })
     .catch((err) => {
       console.log(err);
@@ -67,11 +110,15 @@ async function getCategories(jwt) {
 
 async function getProductsReview(jwt, id) {
   let reviews = await axios
-    .get(baseURL + "avis?product._id=" + id, {
+    .get(baseURL + "avis?populate=*&filters[product][id][$eq]=" + id, {
       headers: { Authorization: "Bearer " + jwt },
     })
     .then((res) => {
-      return res.data;
+      let reviewArray = [];
+      res.data.data.forEach((review) => {
+        reviewArray.push(refactorObject(review));
+      });
+      return reviewArray;
     })
     .catch((err) => {
       console.log(err);
@@ -92,63 +139,64 @@ async function getProductsReview(jwt, id) {
   return sum / count;
 }
 
-async function login(mail, password, cb) {
-  axios
+async function login(mail, password) {
+  return await axios
     .post(baseURL + "auth/local", {
       identifier: mail,
       password: password,
     })
-    .then((response) => {
+    .then(async (response) => {
       /**
        * Auth OK
        */
 
-      me(response.data.jwt, cb);
+      return await me(response.data.jwt);
     })
     .catch((error) => {
-      /**
-       * Auth not OK
-       */
-      //console.log(error);
-      cb(error);
+      console.log(error);
+      return {
+        error: error.response.data.error.message ?? "Identifiants incorrects",
+      };
     });
 }
 
-async function register(username, mail, password, cb) {
-  axios
+async function register(username, mail, password) {
+  return await axios
     .post(baseURL + "auth/local/register", {
       username: username,
       email: mail,
       password: password,
     })
-    .then((response) => {
+    .then(async (response) => {
       /**
        * Register OK
        */
-      me(response.data.jwt, cb);
+      return await me(response.data.jwt);
     })
     .catch((error) => {
-      /**
-       * Email already used / password not enought strong
-       */
-      //LogsError(error);
-      cb(error);
+      console.log(error);
+      return {
+        error:
+          error?.response?.data?.error?.message ?? "Identifiants incorrects",
+      };
     });
 }
 
-export function me(jwt, cb) {
+async function me(jwt) {
   const config = {
     headers: { Authorization: `Bearer ${jwt}` },
   };
 
-  axios
-    .get(baseURL + "users/me", config)
+  return await axios
+    .get(baseURL + "users/me?populate=*", config)
     .then((res) => {
       res.data.jwt = jwt;
-      cb(res);
+      return res;
     })
     .catch((error) => {
-      //LogsError(error);
-      cb(error);
+      console.log(error);
+      return {
+        error: error.response.data.error.message ?? "Identifiants incorrects",
+      };
     });
 }
