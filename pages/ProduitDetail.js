@@ -1,78 +1,116 @@
 import * as React from "react";
-import { Text, View, Image, StyleSheet, Dimensions } from "react-native";
+import {
+  Text,
+  View,
+  Image,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import { Avatar, Card, Divider } from "react-native-paper";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export const ProduitDetail = ({ route, navigation }) => {
   let { product } = route.params;
   navigation.title = "test";
   return (
-    <View style={styles.container}>
-      <Card style={styles.cardContainer}>
-        <View
-          style={{
-            height: Dimensions.get("window").height / 4,
-          }}
+    <>
+      <View style={styles.container}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.touchableOpacityStyle}
+          onPress={() =>
+            navigation.navigate("AddToPanier", {
+              product: route.params?.product,
+            })
+          }
         >
-          <Image source={{ uri: product.image }} style={styles.image}></Image>
-        </View>
-        <View style={styles.info}>
-          <View>
-            <Text style={styles.name}>{product.name}</Text>
-            <Text style={styles.price}>
-              {parseInt(product.price).toFixed(2)}€ /{" "}
-              {product.pricetype.data.attributes.name.charAt(0).toUpperCase() +
-                product.pricetype.data.attributes.name.slice(1)}
-            </Text>
-          </View>
-          <View style={styles.noteContainer}>
-            <Text style={styles.note}>
-              {product.review == -1
-                ? "-"
-                : parseFloat(product.review).toFixed(1)}
-            </Text>
-          </View>
-        </View>
-        <View style={styles.producteur}>
-          <View style={styles.prod_info}>
-            <View style={styles.avatar}>
-              {/* <Avatar rounded title="MD" /> */}
-              <Avatar.Image
-                size={50}
-                source="https://htmlcolorcodes.com/assets/images/colors/gray-color-solid-background-1920x1080.png"
-              />
-            </View>
-            <View style={styles.personal_info}>
-              <View>
-                <Text style={styles.personal_info_name}>
-                  {product.producteur.data.attributes.nom}{" "}
-                  {product.producteur.data.attributes.prenom}
-                </Text>
-              </View>
-              <View>
-                <Text style={styles.personal_info_societe}>
-                  {product.producteur.data.attributes.societe}
-                </Text>
-              </View>
-            </View>
-          </View>
-          <Divider
+          <Ionicons name="add-outline" size={28} color="white" />
+        </TouchableOpacity>
+        <Card style={styles.cardContainer}>
+          <View
             style={{
-              margin: 15,
-            }}
-          />
-          <Text
-            style={{
-              textAlign: "center",
+              height: Dimensions.get("window").height / 4,
             }}
           >
-            {product.description}
-          </Text>
-        </View>
-      </Card>
-    </View>
+            <Image source={{ uri: product.image }} style={styles.image}></Image>
+          </View>
+          <View style={styles.info}>
+            <View>
+              <Text style={styles.name}>{product.name}</Text>
+              <Text style={styles.price}>
+                {parseInt(product.price).toFixed(2)}€ /{" "}
+                {product.pricetype.data.attributes.name
+                  .charAt(0)
+                  .toUpperCase() +
+                  product.pricetype.data.attributes.name.slice(1)}
+              </Text>
+            </View>
+            <View style={styles.noteContainer}>
+              <Text style={styles.note}>
+                {product.review == -1
+                  ? "-"
+                  : parseFloat(product.review).toFixed(1)}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.producteur}>
+            <View style={styles.prod_info}>
+              <View style={styles.avatar}>
+                {product.producteur.data.attributes.image ? (
+                  <Avatar.Image
+                    size={70}
+                    rounded
+                    source={{
+                      uri: product.producteur.data.attributes.image,
+                    }}
+                  />
+                ) : (
+                  <Avatar.Text
+                    size={70}
+                    label={`${product.producteur.data.attributes.prenom.substr(
+                      0,
+                      1
+                    )}${product.producteur.data.attributes.nom.substr(0, 1)}`}
+                  />
+                )}
+              </View>
+              <View style={styles.personal_info}>
+                <View>
+                  <Text style={styles.personal_info_name}>
+                    {product.producteur.data.attributes.nom}{" "}
+                    {product.producteur.data.attributes.prenom}
+                  </Text>
+                </View>
+                <View>
+                  <Text style={styles.personal_info_societe}>
+                    {product.producteur.data.attributes.societe}
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <Divider
+              style={{
+                margin: 15,
+              }}
+            />
+            <Text
+              style={{
+                textAlign: "center",
+              }}
+            >
+              {product.description}
+            </Text>
+          </View>
+        </Card>
+      </View>
+    </>
   );
 };
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   personal_info_name: {
     fontSize: 20,
     color: "black",
@@ -82,9 +120,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "black",
     fontFamily: "GibsonR",
-  },
-  avatar: {
-    marginRight: 10,
   },
   personal_info: {
     display: "flex",
@@ -123,10 +158,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   avatar: {
-    width: 100,
-    height: 100,
-    borderWidth: 2,
-    borderRadius: 75,
+    marginRight: 10,
   },
   info: {
     display: "flex",
@@ -166,5 +198,17 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: "black",
     fontFamily: "GibsonB",
+  },
+  touchableOpacityStyle: {
+    position: "absolute",
+    width: 60,
+    height: 60,
+    alignItems: "center",
+    justifyContent: "center",
+    right: 30,
+    bottom: 30,
+    backgroundColor: "#40693E",
+    elevation: 6,
+    borderRadius: 1000,
   },
 });

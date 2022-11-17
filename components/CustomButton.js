@@ -43,10 +43,9 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     backgroundColor: "#E1E7DF",
     elevation: 5,
-    borderRadius: 5,
+    borderRadius: 10,
     borderBottomColor: "red",
     padding: 15,
-
     fontFamily: "GibsonR",
     fontSize: 15,
   },

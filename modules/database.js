@@ -11,6 +11,8 @@ module.exports = {
   login,
   register,
   getProductById,
+  postOrder,
+  getOrders,
 };
 
 //const baseURL = "https://be23-212-106-119-45.eu.ngrok.io/";
@@ -102,6 +104,53 @@ async function getCategories(jwt) {
         });
         return catArray;
       }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+async function getOrders(jwt, userID) {
+  if (!jwt) return [];
+  return await axios
+    .get(
+      baseURL +
+        "orders?populate=*&filters[user][id][$eq]=" +
+        userID +
+        "&sort[createdAt]=DESC",
+      {
+        headers: { Authorization: "Bearer " + jwt },
+      }
+    )
+    .then((res) => {
+      if (res.data) {
+        return res.data.data;
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+async function postOrder(jwt, userID, price, articles, products) {
+  return await axios
+    .post(
+      baseURL + "orders",
+      {
+        data: {
+          user: userID,
+          price: price,
+          articles: articles,
+          products: products,
+          state: "waiting",
+        },
+      },
+      {
+        headers: { Authorization: "Bearer " + jwt },
+      }
+    )
+    .then((response) => {
+      //console.log(response);
     })
     .catch((err) => {
       console.log(err);

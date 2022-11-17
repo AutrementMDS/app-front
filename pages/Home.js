@@ -65,12 +65,14 @@ export const HomeScreen = ({ navigation }) => {
         {
           id: 0,
           empty: true,
+          text: "Aucun produit trouvé",
         },
       ]);
     }
   }, [products]);
 
   async function searchByCategory(cat) {
+    setProducts([{ empty: true, id: 0, text: "Chargement..." }]);
     setActualCat(cat);
     let newProducts;
     if (cat == "all") {
@@ -178,7 +180,7 @@ export const HomeScreen = ({ navigation }) => {
         <View>
           {index == 0 && <CategoriesList />}
           <View style={styles.emptyProductsContainer}>
-            <Text style={styles.emptyProducts}>Aucun produit trouvé.</Text>
+            <Text style={styles.emptyProducts}>{item.text}</Text>
           </View>
         </View>
       );

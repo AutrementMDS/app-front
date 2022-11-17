@@ -6,16 +6,18 @@ import {
   StyleSheet,
   Dimensions,
   Pressable,
+  TouchableOpacity,
 } from "react-native";
 import { Card } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
 import { CustomInput } from "../components/CustomButton";
 import { getItem, setItem, removeItem } from "../store/store.native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export const AddToPanier = ({ route, navigation }) => {
-  let { product, test } = route.params;
-  navigation.title = "test";
+  let { product } = route.params;
   const [value, setValue] = React.useState(0);
+  const [actualItem, setActualItem] = React.useState(null);
 
   function calculatePrice(nv) {
     nv = nv ? nv : value;
@@ -24,9 +26,9 @@ export const AddToPanier = ({ route, navigation }) => {
 
   function handleChange(nv) {
     setValue(nv);
-    setItem(
-      "actualItem",
+    setActualItem(
       JSON.stringify({
+        id: Math.random().toString(36).substr(2, 9),
         product: product.id,
         quantity: nv,
         price: calculatePrice(nv),
@@ -36,6 +38,30 @@ export const AddToPanier = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        style={styles.touchableOpacityStyle}
+        onPress={async () => {
+          getItem("panier").then((panier) => {
+            if (panier) {
+              panier = JSON.parse(panier);
+              panier.push(actualItem);
+              setItem("panier", JSON.stringify(panier));
+            } else {
+              let np = [];
+              np.push(actualItem);
+              setItem("panier", JSON.stringify(np));
+            }
+
+            navigation.popToTop();
+            navigation.navigate("Panier", {
+              paramPropKey: "paramPropValue",
+            });
+          });
+        }}
+      >
+        <Ionicons name="cart-outline" size={28} color="white" />
+      </TouchableOpacity>
       <Card style={styles.cardContainer}>
         <View
           style={{
@@ -83,7 +109,7 @@ export const AddToPanier = ({ route, navigation }) => {
           >
             <CustomInput
               style={{
-                flex: 5,
+                flex: 1,
               }}
               type="numeric"
               placeholder="0.00"
@@ -92,7 +118,6 @@ export const AddToPanier = ({ route, navigation }) => {
             />
             <View
               style={{
-                flex: 1,
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -103,9 +128,10 @@ export const AddToPanier = ({ route, navigation }) => {
                   fontSize: 22,
                   color: "black",
                   fontFamily: "GibsonB",
+                  marginLeft: 10,
                 }}
               >
-                Kg
+                {product.pricetype.data.attributes.name}
               </Text>
             </View>
           </View>
@@ -125,33 +151,24 @@ export const AddToPanier = ({ route, navigation }) => {
             >
               Total :
             </Text>
-            <View
+            <Text
               style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
+                fontSize: 22,
+                color: "black",
+                fontFamily: "GibsonR",
               }}
             >
-              <Text
-                style={{
-                  fontSize: 22,
-                  color: "black",
-                  fontFamily: "GibsonR",
-                }}
-              >
-                {value}
-                {product.pricetype.data.attributes.name}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 22,
-                  color: "black",
-                  fontFamily: "GibsonR",
-                }}
-              >
-                {calculatePrice().toFixed(2)}€
-              </Text>
-            </View>
+              {`${value} ${product.pricetype.data.attributes.name}`}
+            </Text>
+            <Text
+              style={{
+                fontSize: 22,
+                color: "black",
+                fontFamily: "GibsonR",
+              }}
+            >
+              {`${calculatePrice().toFixed(2)}€`}
+            </Text>
           </View>
         </View>
       </Card>
@@ -159,6 +176,7 @@ export const AddToPanier = ({ route, navigation }) => {
   );
 };
 const styles = StyleSheet.create({
+  container: { flex: 1 },
   fade: {
     position: "absolute",
     bottom: 0,
@@ -211,5 +229,17 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+  },
+  touchableOpacityStyle: {
+    position: "absolute",
+    width: 60,
+    height: 60,
+    alignItems: "center",
+    justifyContent: "center",
+    right: 30,
+    bottom: 30,
+    backgroundColor: "#40693E",
+    elevation: 6,
+    borderRadius: 1000,
   },
 });
