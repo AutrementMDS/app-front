@@ -67,6 +67,7 @@ export const ProduitDetail = ({ route, navigation }) => {
                   />
                 ) : (
                   <Avatar.Text
+                    backgroundColor="#40693E"
                     size={70}
                     label={`${product.producteur.data.attributes.prenom.substr(
                       0,

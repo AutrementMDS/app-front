@@ -1,7 +1,6 @@
 const { default: axios } = require("axios");
 
 module.exports = {
-  getUsers,
   getProducts,
   login,
   register,
@@ -18,17 +17,6 @@ module.exports = {
 //const baseURL = "https://be23-212-106-119-45.eu.ngrok.io/";
 //const baseURL = "http://172.24.232.115:1337/";
 const baseURL = "http://51.210.104.99:1556/api/";
-
-async function getUsers() {
-  await axios
-    .get(baseURL + "/users")
-    .then((res) => {
-      console.log(res);
-      console.log(res.data);
-    })
-    .catch((error) => console.log(error));
-  return 0;
-}
 
 function refactorObject(obj) {
   let nObj = {};
@@ -115,7 +103,7 @@ async function getOrders(jwt, userID) {
   return await axios
     .get(
       baseURL +
-        "orders?populate=*&filters[user][id][$eq]=" +
+        "commands?populate=*&filters[user][id][$eq]=" +
         userID +
         "&sort[createdAt]=DESC",
       {
@@ -133,17 +121,20 @@ async function getOrders(jwt, userID) {
 }
 
 async function postOrder(jwt, userID, price, articles, products) {
+  let data = {
+    user: userID,
+    price: price,
+    articles: articles,
+    products: products,
+    state: "waiting",
+  };
+  console.log(data);
+
   return await axios
     .post(
-      baseURL + "orders",
+      baseURL + "commands",
       {
-        data: {
-          user: userID,
-          price: price,
-          articles: articles,
-          products: products,
-          state: "waiting",
-        },
+        data: data,
       },
       {
         headers: { Authorization: "Bearer " + jwt },
@@ -153,7 +144,7 @@ async function postOrder(jwt, userID, price, articles, products) {
       //console.log(response);
     })
     .catch((err) => {
-      console.log(err);
+      console.log(err.response);
     });
 }
 

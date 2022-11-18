@@ -1,24 +1,42 @@
 import * as React from "react";
-import { Pressable, StyleSheet, Text, TextInput } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 export function CustomButton(props) {
+  let style = {
+    ...styles.buttonContainer,
+  };
+
+  if (props.style) {
+    style = {
+      ...style,
+      ...props.style,
+    };
+  }
+
   return (
-    <Pressable
-      style={
-        props.type == "primary" ? styles.buttonPrimary : styles.buttonSecondary
-      }
-      onPress={() => props.onPress()}
-    >
-      <Text
+    <View style={style}>
+      <Pressable
+        android_ripple={{
+          color: "#849c79",
+        }}
         style={
           props.type == "primary"
-            ? styles.buttonPrimaryText
-            : styles.buttonSecondaryText
+            ? styles.buttonPrimary
+            : styles.buttonSecondary
         }
+        onPress={() => props.onPress()}
       >
-        {props.text}
-      </Text>
-    </Pressable>
+        <Text
+          style={
+            props.type == "primary"
+              ? styles.buttonPrimaryText
+              : styles.buttonSecondaryText
+          }
+        >
+          {props.text}
+        </Text>
+      </Pressable>
+    </View>
   );
 }
 
@@ -49,10 +67,19 @@ const styles = StyleSheet.create({
     fontFamily: "GibsonR",
     fontSize: 15,
   },
+  buttonContainer: {
+    borderRadius: 1000,
+    overflow: "hidden",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 5,
+  },
   buttonPrimary: {
+    width: "100%",
     backgroundColor: "#ADC8A1",
-    borderRadius: 5,
-    marginTop: 20,
+    borderRadius: 1000,
+    // marginTop: 5,
     padding: 15,
     color: "white",
     display: "flex",
@@ -65,10 +92,11 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   buttonSecondary: {
+    width: "100%",
     borderColor: "#40693E",
     borderWidth: 3,
-    borderRadius: 5,
-    marginTop: 5,
+    borderRadius: 1000,
+    // marginTop: 5,
     padding: 15,
     color: "white",
     display: "flex",

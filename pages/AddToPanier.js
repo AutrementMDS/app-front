@@ -25,6 +25,7 @@ export const AddToPanier = ({ route, navigation }) => {
   }
 
   function handleChange(nv) {
+    if (!nv) nv = 0;
     setValue(nv);
     setActualItem(
       JSON.stringify({
@@ -39,8 +40,12 @@ export const AddToPanier = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
+        disabled={!value || value == 0}
         activeOpacity={0.7}
-        style={styles.touchableOpacityStyle}
+        style={{
+          ...styles.touchableOpacityStyle,
+          backgroundColor: !value || value == 0 ? "#ccc" : "#40693E",
+        }}
         onPress={async () => {
           getItem("panier").then((panier) => {
             if (panier) {
@@ -96,7 +101,7 @@ export const AddToPanier = ({ route, navigation }) => {
             marginTop: 5,
             display: "flex",
             flexDirection: "column",
-            justifyContent: "space-between",
+            // justifyContent: "space-between",
             height: Dimensions.get("window").height / 2,
           }}
         >
@@ -140,6 +145,7 @@ export const AddToPanier = ({ route, navigation }) => {
             style={{
               display: "flex",
               flexDirection: "column",
+              marginTop: 15,
             }}
           >
             <Text
@@ -167,7 +173,7 @@ export const AddToPanier = ({ route, navigation }) => {
                 fontFamily: "GibsonR",
               }}
             >
-              {`${calculatePrice().toFixed(2)}€`}
+              {`${calculatePrice(value).toFixed(2)}€`}
             </Text>
           </View>
         </View>

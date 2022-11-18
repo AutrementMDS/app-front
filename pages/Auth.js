@@ -46,7 +46,7 @@ export function Login({ navigation }) {
         <View>
           <CustomButton
             type="primary"
-            text="Valider"
+            text="Me connecter"
             onPress={() => checkLogin()}
           ></CustomButton>
 
@@ -77,11 +77,9 @@ export function Register({ navigation }) {
 
   async function checkRegister() {
     let res = await register(username, email, password);
-    console.log(res);
     if (res.status == 200) {
       setItem("user", JSON.stringify(res.data));
-      console.log(res.data);
-      navigation.navigate("LandingPage");
+      goToLanding();
     } else {
       setError(res.error);
     }
@@ -121,7 +119,7 @@ export function Register({ navigation }) {
         <View>
           <CustomButton
             type="primary"
-            text="Valider"
+            text="Créer mon compte"
             onPress={() => checkRegister()}
           ></CustomButton>
 

@@ -15,7 +15,6 @@ export function CommandeScreen({ route, navigation }) {
       getItem("user").then(async (user) => {
         user = JSON.parse(user);
         let ordersList = await getOrders(user.jwt, user.id);
-        console.log(ordersList);
         setOrders(ordersList);
       });
     }, [])
