@@ -6,13 +6,13 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import { Avatar, Card, Divider } from "react-native-paper";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 export const ProduitDetail = ({ route, navigation }) => {
   let { product } = route.params;
-  navigation.title = "test";
   return (
     <>
       <View style={styles.container}>
@@ -54,55 +54,63 @@ export const ProduitDetail = ({ route, navigation }) => {
               </Text>
             </View>
           </View>
-          <View style={styles.producteur}>
-            <View style={styles.prod_info}>
-              <View style={styles.avatar}>
-                {product.producteur.data.attributes.image ? (
-                  <Avatar.Image
-                    size={70}
-                    rounded
-                    source={{
-                      uri: product.producteur.data.attributes.image,
-                    }}
-                  />
-                ) : (
-                  <Avatar.Text
-                    backgroundColor="#40693E"
-                    size={70}
-                    label={`${product.producteur.data.attributes.prenom.substr(
-                      0,
-                      1
-                    )}${product.producteur.data.attributes.nom.substr(0, 1)}`}
-                  />
-                )}
-              </View>
-              <View style={styles.personal_info}>
-                <View>
-                  <Text style={styles.personal_info_name}>
-                    {product.producteur.data.attributes.nom}{" "}
-                    {product.producteur.data.attributes.prenom}
-                  </Text>
+          <Pressable
+            onPress={() => {
+              navigation.navigate("Producteur", {
+                producteur: product.producteur.data.attributes,
+              });
+            }}
+          >
+            <View style={styles.producteur}>
+              <View style={styles.prod_info}>
+                <View style={styles.avatar}>
+                  {product.producteur.data.attributes.image ? (
+                    <Avatar.Image
+                      size={70}
+                      rounded
+                      source={{
+                        uri: product.producteur.data.attributes.image,
+                      }}
+                    />
+                  ) : (
+                    <Avatar.Text
+                      backgroundColor="#40693E"
+                      size={70}
+                      label={`${product.producteur.data.attributes.prenom.substr(
+                        0,
+                        1
+                      )}${product.producteur.data.attributes.nom.substr(0, 1)}`}
+                    />
+                  )}
                 </View>
-                <View>
-                  <Text style={styles.personal_info_societe}>
-                    {product.producteur.data.attributes.societe}
-                  </Text>
+                <View style={styles.personal_info}>
+                  <View>
+                    <Text style={styles.personal_info_name}>
+                      {product.producteur.data.attributes.nom}{" "}
+                      {product.producteur.data.attributes.prenom}
+                    </Text>
+                  </View>
+                  <View>
+                    <Text style={styles.personal_info_societe}>
+                      {product.producteur.data.attributes.societe}
+                    </Text>
+                  </View>
                 </View>
               </View>
+              <Divider
+                style={{
+                  margin: 15,
+                }}
+              />
+              <Text
+                style={{
+                  textAlign: "center",
+                }}
+              >
+                {product.description}
+              </Text>
             </View>
-            <Divider
-              style={{
-                margin: 15,
-              }}
-            />
-            <Text
-              style={{
-                textAlign: "center",
-              }}
-            >
-              {product.description}
-            </Text>
-          </View>
+          </Pressable>
         </Card>
       </View>
     </>

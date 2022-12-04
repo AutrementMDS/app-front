@@ -1,4 +1,5 @@
 const { default: axios } = require("axios");
+import { getItem, setItem, removeItem } from "../store/store.native";
 
 module.exports = {
   getProducts,
@@ -12,6 +13,7 @@ module.exports = {
   getProductById,
   postOrder,
   getOrders,
+  getProducteurOrders,
 };
 
 //const baseURL = "https://be23-212-106-119-45.eu.ngrok.io/";
@@ -128,7 +130,6 @@ async function postOrder(jwt, userID, price, articles, products) {
     products: products,
     state: "waiting",
   };
-  console.log(data);
 
   return await axios
     .post(
@@ -140,8 +141,32 @@ async function postOrder(jwt, userID, price, articles, products) {
         headers: { Authorization: "Bearer " + jwt },
       }
     )
-    .then((response) => {
-      //console.log(response);
+    .then(async (response) => {
+      const orderID = response.data.data.id;
+
+      for (let product of products) {
+        product = JSON.parse(product);
+
+        let payload = {
+          producteur: product.producteur,
+          quantity: product.quantity,
+          orderID: orderID.toString(),
+          price: product.price,
+          product: product.product,
+          client: userID,
+        };
+
+        await axios
+          .post(
+            baseURL + "producteur-orders",
+            { data: payload },
+            { headers: { Authorization: "Bearer " + jwt } }
+          )
+          .then((response) => {})
+          .catch((err) => {
+            console.log(err.response);
+          });
+      }
     })
     .catch((err) => {
       console.log(err.response);
@@ -239,4 +264,58 @@ async function me(jwt) {
         error: error.response.data.error.message ?? "Identifiants incorrects",
       };
     });
+}
+
+async function getUser() {
+  return new Promise((resolve, reject) => {
+    getItem("user").then((user) => {
+      user = JSON.parse(user);
+      resolve(user);
+    });
+  });
+}
+
+/**
+ * Get all orders for a producer
+ */
+async function getProducteurOrders() {
+  let user = await getUser();
+  let orders = await axios
+    .get(
+      baseURL +
+        "producteur-orders?populate=*&filters[producteur][id][$eq]=" +
+        user.id,
+      {
+        headers: { Authorization: "Bearer " + user.jwt },
+      }
+    )
+    .then((res) => {
+      return res.data.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  let resReturn = {};
+
+  for (let order of orders) {
+    if (!resReturn[order.attributes.orderID]) {
+      resReturn[order.attributes.orderID] = [];
+      let obj = {
+        product: order.attributes.product,
+        quantity: order.attributes.quantity,
+        price: order.attributes.price,
+      };
+      resReturn[order.attributes.orderID].push(obj);
+    } else {
+      let obj = {
+        product: order.attributes.product,
+        quantity: order.attributes.quantity,
+        price: order.attributes.price,
+      };
+      resReturn[order.attributes.orderID].push(obj);
+    }
+  }
+
+  return resReturn;
 }

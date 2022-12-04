@@ -15,8 +15,13 @@ import { ProduitDetail } from "../pages/ProduitDetail";
 import { Button, Icon } from "react-native";
 import { IconButton, MD3Colors } from "react-native-paper";
 import { AddToPanier } from "../pages/AddToPanier";
+import { ProducteurScreen } from "../pages/Producteur";
+import { ProducteurHomeScreen } from "../pages/producteur/Home";
+import { ProducteurProductsScreen } from "../pages/producteur/Produits";
+import { ProducteurOrdersScreen } from "../pages/producteur/Commandes";
 
 const Tab = createBottomTabNavigator();
+const HomeStack = createStackNavigator();
 
 const hiddenTab = {
   tabBarStyle: { display: "none" },
@@ -25,17 +30,42 @@ const hiddenTab = {
   tabBarVisible: false,
 };
 
-const HomeStack = createStackNavigator();
-const HomeStackScreen = ({ isConnected }) => {
+const UserHomeStackScreen = ({ actualPage, setActualPage, isConnected }) => {
+  const [selectedProducteur, setSelectedProducteur] = React.useState(null);
+
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
         name="HomeScreen"
-        component={AppScreens}
+        component={UserAppScreens}
         options={({ route, navigation }) => {
           route.isConnected = isConnected;
+          route.setActualPage = setActualPage;
+          route.actualPage = actualPage;
           return {
             headerShown: false,
+          };
+        }}
+      />
+      <HomeStack.Screen
+        name="Producteur"
+        component={ProducteurScreen}
+        options={({ route, navigation }) => {
+          // route.params = {
+          //   setSelectedProducteur,
+          // };
+          return {
+            title: "",
+            headerLeft: () => (
+              <IconButton
+                icon="arrow-left"
+                size={25}
+                color="black"
+                onPress={async () => {
+                  navigation.pop();
+                }}
+              />
+            ),
           };
         }}
       />
@@ -77,10 +107,35 @@ const HomeStackScreen = ({ isConnected }) => {
   );
 };
 
-const AppScreens = ({ route, navigation }) => {
+const ProducteurHomeStackScreen = ({
+  actualPage,
+  setActualPage,
+  isConnected,
+}) => {
+  return (
+    <HomeStack.Navigator>
+      <HomeStack.Screen
+        name="HomeScreen"
+        component={ProducteurAppScreens}
+        options={({ route, navigation }) => {
+          route.isConnected = isConnected;
+          route.setActualPage = setActualPage;
+          route.actualPage = actualPage;
+          return {
+            headerShown: false,
+          };
+        }}
+      />
+    </HomeStack.Navigator>
+  );
+};
+
+const UserAppScreens = ({ route, navigation }) => {
   const [defaultRoute, setDefaultRoute] = React.useState(
     route.isConnected ? "Home" : "Login"
   );
+
+  const [panierPrice, setPanierPrice] = React.useState(0);
 
   return (
     <Tab.Navigator
@@ -146,12 +201,12 @@ const AppScreens = ({ route, navigation }) => {
       <Tab.Screen
         name="Login"
         component={Login}
-        options={{ title: "Se connecter", ...hiddenTab }}
+        options={{ title: "Se connecter", ...hiddenTab, headerShown: false }}
       />
       <Tab.Screen
         name="Register"
         component={Register}
-        options={{ title: "Créer un compte", ...hiddenTab }}
+        options={{ title: "Créer un compte", ...hiddenTab, headerShown: false }}
       />
       <Tab.Screen
         name="Home"
@@ -161,31 +216,24 @@ const AppScreens = ({ route, navigation }) => {
       <Tab.Screen
         name="Panier"
         component={PanierScreen}
-        options={{
-          title: "Mon panier",
-          headerRight: () => {
-            const [total, setTotal] = React.useState(0);
-            getItem("panier").then((panier) => {
-              if (panier) {
-                panier = JSON.parse(panier);
-                let newTotal = 0;
-                panier.forEach((item) => {
-                  item = JSON.parse(item);
-                  newTotal += item.price;
-                });
-                setTotal(newTotal);
-              }
-            });
-            return (
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: "bold",
-                  marginRight: 10,
-                }}
-              >{`Total: ${total}€`}</Text>
-            );
-          },
+        options={({ route, navigation }) => {
+          route.params = {
+            setPanierPrice: setPanierPrice,
+          };
+          return {
+            title: "Mon panier",
+            headerRight: () => {
+              return (
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: "bold",
+                    marginRight: 10,
+                  }}
+                >{`Total: ${panierPrice}€`}</Text>
+              );
+            },
+          };
         }}
       />
       <Tab.Screen
@@ -196,7 +244,123 @@ const AppScreens = ({ route, navigation }) => {
       <Tab.Screen
         name="Compte"
         component={CompteScreen}
-        options={{ title: "Mon Compte" }}
+        options={(props) => {
+          props.route.params = {
+            setActualPage: route.setActualPage,
+            actualPage: route.actualPage,
+          };
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
+
+const ProducteurAppScreens = ({ route, navigation }) => {
+  const [defaultRoute, setDefaultRoute] = React.useState(
+    route.isConnected ? "Home" : "Login"
+  );
+
+  const [panierPrice, setPanierPrice] = React.useState(0);
+
+  return (
+    <Tab.Navigator
+      initialRouteName={defaultRoute}
+      backBehavior="initialRoute"
+      screenOptions={({ route }) => ({
+        tabBarStyle: {
+          height: 55,
+          margin: 20,
+          borderRadius: 200,
+          padding: 0,
+          position: "absolute",
+          elevation: 6,
+          overflow: "hidden",
+        },
+        tabBarLabel: ({ focused, color, size }) => {
+          return false;
+        },
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === "Home") {
+            iconName = "home-outline";
+          } else if (route.name === "Produits") {
+            iconName = "cube-outline";
+          } else if (route.name === "Commande") {
+            iconName = "list-outline";
+          } else if (route.name === "Compte") {
+            iconName = "person-outline";
+          }
+
+          return (
+            <View
+              style={{
+                display: "flex",
+                height: "80%",
+                width: "80%",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: color == "primary" ? "#40693E" : "transparent",
+                borderRadius: 100,
+                transition: "all 0.2s ease-in-out",
+                elevation: color == "primary" ? 1.5 : 0,
+              }}
+            >
+              <Ionicons
+                name={iconName}
+                size={20}
+                color={focused ? "white" : "black"}
+              />
+            </View>
+          );
+        },
+        tabBarActiveTintColor: "primary",
+        tabBarInactiveTintColor: "black",
+      })}
+    >
+      <Tab.Screen
+        name="LandingPage"
+        component={LandingPageScreen}
+        options={{ headerShown: false, ...hiddenTab }}
+      ></Tab.Screen>
+      <Tab.Screen
+        name="Login"
+        component={Login}
+        options={{ title: "Se connecter", ...hiddenTab, headerShown: false }}
+      />
+      <Tab.Screen
+        name="Register"
+        component={Register}
+        options={{ title: "Créer un compte", ...hiddenTab, headerShown: false }}
+      />
+      {/*  */}
+      <Tab.Screen
+        name="Home"
+        component={ProducteurHomeScreen}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Produits"
+        component={ProducteurProductsScreen}
+        options={{ title: "Produits" }}
+      />
+      <Tab.Screen
+        name="Commande"
+        component={ProducteurOrdersScreen}
+        options={{ title: "Commandes en cours" }}
+      />
+      <Tab.Screen
+        name="Compte"
+        component={CompteScreen}
+        options={(props) => {
+          props.route.params = {
+            setActualPage: route.setActualPage,
+            actualPage: route.actualPage,
+          };
+          return {
+            title: "Mon compte",
+          };
+        }}
       />
     </Tab.Navigator>
   );
@@ -204,14 +368,23 @@ const AppScreens = ({ route, navigation }) => {
 
 export function Router() {
   const [isConnected, setIsConnected] = React.useState(null);
+  const [role, setRole] = React.useState(null);
+  const [actualPage, setActualPage] = React.useState("user");
 
-  getItem("user").then((user) => {
-    if (user == null) {
-      setIsConnected(false);
-    } else {
-      setIsConnected(true);
-    }
-  });
+  React.useEffect(() => {
+    getItem("user").then((nUser) => {
+      if (nUser == null) {
+        setIsConnected(false);
+      } else {
+        let type = JSON.parse(nUser).role.type;
+        if (type === "producteur") {
+          setActualPage("producteur");
+        }
+        setRole(type);
+        setIsConnected(true);
+      }
+    });
+  }, []);
 
   switch (isConnected) {
     case null:
@@ -224,10 +397,26 @@ export function Router() {
       );
 
     default:
-      return (
-        <NavigationContainer>
-          <HomeStackScreen isConnected={isConnected} />
-        </NavigationContainer>
-      );
+      if (actualPage === "producteur") {
+        return (
+          <NavigationContainer>
+            <ProducteurHomeStackScreen
+              actualPage={actualPage}
+              setActualPage={setActualPage}
+              isConnected={isConnected}
+            />
+          </NavigationContainer>
+        );
+      } else {
+        return (
+          <NavigationContainer>
+            <UserHomeStackScreen
+              actualPage={actualPage}
+              setActualPage={setActualPage}
+              isConnected={isConnected}
+            />
+          </NavigationContainer>
+        );
+      }
   }
 }

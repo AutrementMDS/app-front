@@ -1,9 +1,10 @@
 import * as React from "react";
-import { View, StyleSheet, Dimensions, Text } from "react-native";
+import { View, StyleSheet, Dimensions, Text, Image } from "react-native";
 import { Button } from "react-native-paper";
 import { CustomButton, CustomInput } from "../components/CustomButton";
 import { login, register } from "../modules/database";
 import { getItem, setItem } from "../store/store.native";
+import logo from "../assets/logo/basic_logo.png";
 
 export function Login({ navigation }) {
   const [username, setUsername] = React.useState("");
@@ -26,6 +27,10 @@ export function Login({ navigation }) {
 
   return (
     <View style={styles.page}>
+      <View style={styles.containerImage}>
+        <Image source={logo} alt="logo" style={styles.image} />
+        <Text style={styles.appName}>Autrement</Text>
+      </View>
       <View style={styles.container}>
         <View>
           <CustomInput
@@ -87,6 +92,10 @@ export function Register({ navigation }) {
 
   return (
     <View style={styles.page}>
+      <View style={styles.containerImage}>
+        <Image source={logo} alt="logo" style={styles.image} />
+        <Text style={styles.appName}>Autrement</Text>
+      </View>
       <View style={styles.container}>
         <View>
           {/* <CustomInput controller={setUsername} type="text" placeholder="Nom" /> */}
@@ -138,6 +147,7 @@ const styles = StyleSheet.create({
   page: {
     backgroundColor: "#FAFAFA",
     flex: 1,
+    paddingTop: 50,
   },
   container: {
     flex: 1,
@@ -150,5 +160,26 @@ const styles = StyleSheet.create({
     marginTop: 10,
     backgroundColor: "#ffa4a4",
     padding: 10,
+  },
+  containerImage: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    marginBottom: 5,
+    marginLeft: 10,
+    width: "100%",
+  },
+  image: {
+    width: Dimensions.get("window").width / 6,
+    height: 50,
+    resizeMode: "contain",
+  },
+  appName: {
+    fontSize: 30,
+    fontFamily: "GibsonB",
+    color: "#40693E",
+    marginLeft: 10,
   },
 });

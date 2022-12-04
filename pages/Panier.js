@@ -1,57 +1,59 @@
 import * as React from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  ImageBackground,
-  ScrollView,
-  Dimensions,
-  Image,
-  Pressable,
-} from "react-native";
-import { Card, IconButton } from "react-native-paper";
-import carrots from "../assets/images/carrots.jpg";
+import { Text, View, StyleSheet, Dimensions, Image } from "react-native";
+import { IconButton } from "react-native-paper";
 import { getProductById, postOrder } from "../modules/database";
 import { getItem, setItem, removeItem } from "../store/store.native";
 import { LinearGradient } from "expo-linear-gradient";
 import { FlatList } from "react-native";
 import { CustomButton } from "../components/CustomButton";
+import { useFocusEffect } from "@react-navigation/native";
 
 export function PanierScreen({ route, navigation }) {
   const [products, setProducts] = React.useState([]);
   const [panier, setPanier] = React.useState([]);
 
-  React.useEffect(() => {
-    getItem("user").then((user) => {
-      user = JSON.parse(user);
+  useFocusEffect(
+    React.useCallback(() => {
+      getItem("user").then((user) => {
+        user = JSON.parse(user);
 
-      getItem("panier").then((res) => {
-        let panier = JSON.parse(res);
-        setPanier(panier);
+        getItem("panier").then((res) => {
+          let panier = JSON.parse(res);
+          setPanier(panier);
 
-        let promises = [];
-        let items = [];
+          let promises = [];
+          let items = [];
 
-        panier &&
-          panier.map((item) => {
-            promises.push(
-              new Promise(async (resolve, reject) => {
-                item = JSON.parse(item);
-                let product = await getProductById(user.jwt, item.product);
-                product.total_quantity = item.quantity;
-                product.total_price = item.price;
-                items.push(product);
-                resolve();
-              })
-            );
+          panier &&
+            panier.map((item) => {
+              promises.push(
+                new Promise(async (resolve, reject) => {
+                  item = JSON.parse(item);
+                  let product = await getProductById(user.jwt, item.product);
+                  product.total_quantity = item.quantity;
+                  product.total_price = item.price;
+                  items.push(product);
+                  resolve();
+                })
+              );
+            });
+
+          Promise.all(promises).then((res) => {
+            setProducts(items);
           });
-
-        Promise.all(promises).then((res) => {
-          setProducts(items);
         });
       });
+    }, [])
+  );
+
+  React.useEffect(() => {
+    let total_price = 0;
+    products.map((item) => {
+      total_price += item.total_price;
     });
-  }, [route]);
+    route.params.setPanierPrice(total_price);
+    //navigation.params.total_price = total_price;
+  }, [products]);
 
   const PanierProduct = ({ item, index }) => {
     function removeProductById(id) {

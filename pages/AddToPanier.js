@@ -33,8 +33,27 @@ export const AddToPanier = ({ route, navigation }) => {
         product: product.id,
         quantity: nv,
         price: calculatePrice(nv),
+        producteur: product.producteur.data.id,
       })
     );
+  }
+
+  function addProductToPanier() {
+    getItem("panier").then((panier) => {
+      if (panier) {
+        panier = JSON.parse(panier);
+        panier.push(actualItem);
+        setItem("panier", JSON.stringify(panier));
+      } else {
+        let np = [];
+        np.push(actualItem);
+        setItem("panier", JSON.stringify(np));
+      }
+      navigation.popToTop();
+      navigation.navigate("Panier", {
+        paramPropKey: "paramPropValue",
+      });
+    });
   }
 
   return (
@@ -47,22 +66,7 @@ export const AddToPanier = ({ route, navigation }) => {
           backgroundColor: !value || value == 0 ? "#ccc" : "#40693E",
         }}
         onPress={async () => {
-          getItem("panier").then((panier) => {
-            if (panier) {
-              panier = JSON.parse(panier);
-              panier.push(actualItem);
-              setItem("panier", JSON.stringify(panier));
-            } else {
-              let np = [];
-              np.push(actualItem);
-              setItem("panier", JSON.stringify(np));
-            }
-
-            navigation.popToTop();
-            navigation.navigate("Panier", {
-              paramPropKey: "paramPropValue",
-            });
-          });
+          addProductToPanier();
         }}
       >
         <Ionicons name="cart-outline" size={28} color="white" />

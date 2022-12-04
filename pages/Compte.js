@@ -3,19 +3,22 @@ import { Text, View, StyleSheet } from "react-native";
 import { Avatar, Button, Divider } from "react-native-paper";
 import { CustomButton } from "../components/CustomButton";
 import { getItem, setItem, removeItem } from "../store/store.native";
+import { useFocusEffect } from "@react-navigation/native";
 
-export function CompteScreen({ navigation }) {
+export function CompteScreen({ route, navigation }) {
   const [user, setUser] = React.useState(null);
 
-  React.useEffect(() => {
-    getItem("user").then((user) => {
-      if (!user) {
-        return;
-      }
-      let parsed = JSON.parse(user);
-      setUser(parsed);
-    });
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      getItem("user").then((user) => {
+        if (!user) {
+          return;
+        }
+        let parsed = JSON.parse(user);
+        setUser(parsed);
+      });
+    }, [])
+  );
 
   return (
     <>
@@ -46,7 +49,9 @@ export function CompteScreen({ navigation }) {
             </View>
             <View>
               <Text style={styles.personal_info_societe}>
-                Utilisateur basique
+                {user?.role.type === "producteur"
+                  ? "Producteur"
+                  : "Utilisateur basique"}
               </Text>
             </View>
           </View>
@@ -77,12 +82,30 @@ export function CompteScreen({ navigation }) {
           }}
           type="secondary"
           text="Se deconnecter"
-          onPress={() => {
-            removeItem("user");
-            removeItem("panier");
+          onPress={async () => {
+            await removeItem("user");
+            await removeItem("panier");
             navigation.navigate("Login");
           }}
         ></CustomButton>
+        {user?.role.type === "producteur" && (
+          <CustomButton
+            style={{
+              marginTop: 20,
+            }}
+            type="secondary"
+            text={
+              route.params.actualPage === "producteur"
+                ? "Page utilisateur"
+                : "Page producteur"
+            }
+            onPress={() => {
+              route.params.setActualPage(
+                route.params.actualPage === "producteur" ? "user" : "producteur"
+              );
+            }}
+          ></CustomButton>
+        )}
       </View>
     </>
   );
