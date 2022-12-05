@@ -14,6 +14,7 @@ module.exports = {
   postOrder,
   getOrders,
   getProducteurOrders,
+  getProducteurImages,
 };
 
 //const baseURL = "https://be23-212-106-119-45.eu.ngrok.io/";
@@ -318,4 +319,18 @@ async function getProducteurOrders() {
   }
 
   return resReturn;
+}
+
+async function getProducteurImages(producteurID) {
+  let user = await getUser();
+  return await axios
+    .get(baseURL + "images?filters[producteur][id][$eq]=" + producteurID, {
+      headers: { Authorization: "Bearer " + user.jwt },
+    })
+    .then((res) => {
+      return res.data.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }

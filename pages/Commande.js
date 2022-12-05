@@ -20,6 +20,16 @@ export function CommandeScreen({ route, navigation }) {
     }, [])
   );
 
+  if (orders.length == 0) {
+    return (
+      <View>
+        <View style={styles.emptyProductsContainer}>
+          <Text style={styles.emptyProducts}>Aucunes Commandes</Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View>
       <FlatList
@@ -118,5 +128,17 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: "#E1E7DF",
     fontFamily: "GibsonB",
+  },
+  emptyProductsContainer: {
+    display: "flex",
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height / 2,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyProducts: {
+    textAlign: "center",
+    fontFamily: "GibsonB",
+    color: "#40693E",
   },
 });

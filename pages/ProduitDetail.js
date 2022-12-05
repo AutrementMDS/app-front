@@ -58,6 +58,7 @@ export const ProduitDetail = ({ route, navigation }) => {
             onPress={() => {
               navigation.navigate("Producteur", {
                 producteur: product.producteur.data.attributes,
+                producteurID: product.producteur.data.id,
               });
             }}
           >

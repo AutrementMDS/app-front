@@ -42,8 +42,8 @@ export function ProducteurOrdersScreen({ route, navigation }) {
             <View style={styles.card} key={index}>
               <Text style={styles.cardTitle}>{`Commande n°${key}`}</Text>
               <View style={styles.cardContent}>
-                {pack.map((p) => (
-                  <View style={styles.cardContentItem}>
+                {pack.map((p, index) => (
+                  <View style={styles.cardContentItem} key={index}>
                     <Text style={styles.cardContentItemTitle}>
                       {p.product.data.attributes.name}
                     </Text>
