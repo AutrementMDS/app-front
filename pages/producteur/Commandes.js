@@ -2,12 +2,11 @@ import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 import { Page } from "../../components/Page";
 import logo from "../../assets/logo/basic_logo.png";
 import React, { useEffect } from "react";
-import { getProducteurOrders } from "../../modules/database";
+import { getProducteurOrders, getProductById } from "../../modules/database";
 import { useFocusEffect } from "@react-navigation/native";
 
 export function ProducteurOrdersScreen({ route, navigation }) {
   const [orders, setOrders] = React.useState([]);
-  const [totalPrice, setTotalPrice] = React.useState(0);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -17,20 +16,32 @@ export function ProducteurOrdersScreen({ route, navigation }) {
 
   async function getOrders() {
     let orders = await getProducteurOrders();
-    computeTotalOrders(orders);
+
+    for (let i = 0; i < Object.keys(orders).length; i++) {
+      let order = orders[Object.keys(orders)[i]];
+
+      for (let i = 0; i < order.length; i++) {
+        let product = await getProductById(order[i].product.data.id);
+        order[i].product = product;
+      }
+    }
+
     setOrders(orders);
   }
 
-  function computeTotalOrders(orders) {
-    let total = 0;
-
-    Object.keys(orders).map(function (key, index) {
-      let pack = orders[key];
-      for (let p of pack) {
-        total += p.price;
-      }
+  function getOrdersDetail(pack) {
+    let res = [];
+    pack.map((p, index) => {
+      res.push(
+        <View style={styles.cardContentItem} key={index}>
+          <Text style={styles.cardContentItemTitle}>{p?.product?.name}</Text>
+          <Text
+            style={styles.cardContentItemPrice}
+          >{`${p.quantity} ${p.product?.pricetype?.data?.attributes?.name}`}</Text>
+        </View>
+      );
     });
-    setTotalPrice(total.toFixed(2));
+    return res;
   }
 
   return (
@@ -41,18 +52,7 @@ export function ProducteurOrdersScreen({ route, navigation }) {
           return (
             <View style={styles.card} key={index}>
               <Text style={styles.cardTitle}>{`Commande n°${key}`}</Text>
-              <View style={styles.cardContent}>
-                {pack.map((p, index) => (
-                  <View style={styles.cardContentItem} key={index}>
-                    <Text style={styles.cardContentItemTitle}>
-                      {p.product.data.attributes.name}
-                    </Text>
-                    <Text
-                      style={styles.cardContentItemPrice}
-                    >{`${p.quantity}`}</Text>
-                  </View>
-                ))}
-              </View>
+              <View style={styles.cardContent}>{getOrdersDetail(pack)}</View>
             </View>
           );
         })}

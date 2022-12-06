@@ -15,6 +15,7 @@ module.exports = {
   getOrders,
   getProducteurOrders,
   getProducteurImages,
+  getProductsByProducteur,
 };
 
 //const baseURL = "https://be23-212-106-119-45.eu.ngrok.io/";
@@ -48,10 +49,33 @@ async function getProducts(jwt) {
   return pro;
 }
 
-async function getProductById(jwt, id) {
+async function getProductsByProducteur() {
+  let user = await getUser();
+  let pro = await axios
+    .get(
+      baseURL + "products?populate=*&filters[producteur][id][$eq]=" + user.id,
+      {
+        headers: { Authorization: "Bearer " + user.jwt },
+      }
+    )
+    .then((res) => {
+      let productsArray = [];
+      res.data.data.forEach((product) => {
+        productsArray.push(refactorObject(product));
+      });
+      return productsArray;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  return pro;
+}
+
+async function getProductById(id) {
+  let user = await getUser();
   let pro = await axios
     .get(baseURL + "products/" + id + "/?populate=*", {
-      headers: { Authorization: "Bearer " + jwt },
+      headers: { Authorization: "Bearer " + user.jwt },
     })
     .then((res) => {
       return refactorObject(res.data.data);

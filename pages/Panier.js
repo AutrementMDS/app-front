@@ -29,7 +29,7 @@ export function PanierScreen({ route, navigation }) {
               promises.push(
                 new Promise(async (resolve, reject) => {
                   item = JSON.parse(item);
-                  let product = await getProductById(user.jwt, item.product);
+                  let product = await getProductById(item.product);
                   product.total_quantity = item.quantity;
                   product.total_price = item.price;
                   items.push(product);
