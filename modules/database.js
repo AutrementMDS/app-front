@@ -32,6 +32,9 @@ function refactorObject(obj) {
   return nObj;
 }
 
+/**
+ * Get all products
+ */
 async function getProducts(jwt) {
   let pro = await axios
     .get(baseURL + "products?populate=*", {
@@ -50,6 +53,9 @@ async function getProducts(jwt) {
   return pro;
 }
 
+/**
+ * Get all products from a producteur
+ */
 async function getProductsByProducteur() {
   let user = await getUser();
   let pro = await axios
@@ -72,6 +78,9 @@ async function getProductsByProducteur() {
   return pro;
 }
 
+/**
+ * Get a product by id
+ */
 async function getProductById(id) {
   let user = await getUser();
   let pro = await axios
@@ -87,6 +96,9 @@ async function getProductById(id) {
   return pro;
 }
 
+/**
+ * Get all products from a category
+ */
 async function getProductsByCategory(jwt, cat) {
   let pro = await axios
     .get(baseURL + "products?populate=*&filters[category][name][$eq]=" + cat, {
@@ -106,6 +118,9 @@ async function getProductsByCategory(jwt, cat) {
   return pro;
 }
 
+/**
+ * Get all categories
+ */
 async function getCategories(jwt) {
   if (!jwt) return [];
   return await axios
@@ -126,6 +141,9 @@ async function getCategories(jwt) {
     });
 }
 
+/**
+ * Get orders for an user
+ */
 async function getOrders(jwt, userID) {
   if (!jwt) return [];
   return await axios
@@ -148,6 +166,9 @@ async function getOrders(jwt, userID) {
     });
 }
 
+/**
+ * New order
+ */
 async function postOrder(jwt, userID, price, articles, products) {
   let data = {
     user: userID,
@@ -199,6 +220,9 @@ async function postOrder(jwt, userID, price, articles, products) {
     });
 }
 
+/**
+ * Get all reviews for a product
+ */
 async function getProductsReview(jwt, id) {
   let reviews = await axios
     .get(baseURL + "avis?populate=*&filters[product][id][$eq]=" + id, {
@@ -230,6 +254,9 @@ async function getProductsReview(jwt, id) {
   return sum / count;
 }
 
+/**
+ * Login user
+ */
 async function login(mail, password) {
   return await axios
     .post(baseURL + "auth/local", {
@@ -251,6 +278,9 @@ async function login(mail, password) {
     });
 }
 
+/**
+ * Register user
+ */
 async function register(username, mail, password) {
   return await axios
     .post(baseURL + "auth/local/register", {
@@ -273,6 +303,9 @@ async function register(username, mail, password) {
     });
 }
 
+/**
+ * Get user informations
+ */
 async function me(jwt) {
   const config = {
     headers: { Authorization: `Bearer ${jwt}` },
@@ -346,6 +379,9 @@ async function getProducteurOrders() {
   return resReturn;
 }
 
+/**
+ * Get images from producteur to display on the producteur page
+ */
 async function getProducteurImages(producteurID) {
   let user = await getUser();
   return await axios
@@ -360,6 +396,9 @@ async function getProducteurImages(producteurID) {
     });
 }
 
+/**
+ * Update product by an productID
+ */
 async function updateProduct(productID, name, price, stock, description) {
   let user = await getUser();
   let data = {
