@@ -64,15 +64,14 @@ export function ProducteurOrdersScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   card: {
     marginTop: 10,
-    backgroundColor: "#D5D5D5",
+    backgroundColor: "#ADC8A1",
     width: "100%",
-    height: 100,
     borderRadius: 10,
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    padding: 20,
+    padding: 15,
   },
   cardTitle: {
     fontFamily: "GibsonB",
@@ -83,6 +82,11 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "flex-start",
+    backgroundColor: "#FBFFF9",
+    padding: 10,
+    width: "100%",
+    borderRadius: 5,
+    marginTop: 10,
   },
   cardContentItem: {
     display: "flex",
@@ -94,9 +98,11 @@ const styles = StyleSheet.create({
   cardContentItemTitle: {
     fontFamily: "GibsonR",
     fontSize: 15,
+    color: "#40693E",
   },
   cardContentItemPrice: {
     fontFamily: "GibsonB",
     fontSize: 15,
+    color: "#40693E",
   },
 });

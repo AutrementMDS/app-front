@@ -19,6 +19,7 @@ import { ProducteurScreen } from "../pages/Producteur";
 import { ProducteurHomeScreen } from "../pages/producteur/Home";
 import { ProducteurProductsScreen } from "../pages/producteur/Produits";
 import { ProducteurOrdersScreen } from "../pages/producteur/Commandes";
+import { ProducteurProductScreen } from "../pages/producteur/Product";
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -31,8 +32,6 @@ const hiddenTab = {
 };
 
 const UserHomeStackScreen = ({ actualPage, setActualPage, isConnected }) => {
-  const [selectedProducteur, setSelectedProducteur] = React.useState(null);
-
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
@@ -125,6 +124,24 @@ const ProducteurHomeStackScreen = ({
             headerShown: false,
           };
         }}
+      />
+
+      <HomeStack.Screen
+        name="Product"
+        component={ProducteurProductScreen}
+        options={({ route, navigation }) => ({
+          title: route.params?.product?.name || "",
+          headerLeft: () => (
+            <IconButton
+              icon="arrow-left"
+              size={25}
+              color="black"
+              onPress={async () => {
+                navigation.pop();
+              }}
+            />
+          ),
+        })}
       />
     </HomeStack.Navigator>
   );

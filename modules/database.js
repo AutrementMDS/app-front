@@ -16,6 +16,7 @@ module.exports = {
   getProducteurOrders,
   getProducteurImages,
   getProductsByProducteur,
+  updateProduct,
 };
 
 //const baseURL = "https://be23-212-106-119-45.eu.ngrok.io/";
@@ -356,5 +357,32 @@ async function getProducteurImages(producteurID) {
     })
     .catch((err) => {
       console.log(err);
+    });
+}
+
+async function updateProduct(productID, name, price, stock, description) {
+  let user = await getUser();
+  let data = {
+    name: name,
+    price: price,
+    stock: stock,
+    description: description,
+  };
+
+  return await axios
+    .put(
+      baseURL + "products/" + productID,
+      {
+        data: data,
+      },
+      {
+        headers: { Authorization: "Bearer " + user.jwt },
+      }
+    )
+    .then(async (response) => {
+      //console.log(response);
+    })
+    .catch((err) => {
+      console.log(err.response);
     });
 }

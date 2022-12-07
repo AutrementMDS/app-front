@@ -42,6 +42,10 @@ export function ProducteurHomeScreen({ route, navigation }) {
       <View>
         <View style={styles.dashboardCard}>
           <Text style={styles.dashboardCardContent}>{`${totalPrice} €`}</Text>
+          <Text style={styles.dashboardCardContentSub}>{`Après déduction : ${(
+            (totalPrice * (100 - 20)) /
+            100
+          ).toFixed(2)} €`}</Text>
         </View>
         <View style={styles.dashboardCard}>
           <Text style={styles.dashboardCardContent}>{`${
@@ -76,18 +80,23 @@ const styles = StyleSheet.create({
   },
   dashboardCard: {
     marginTop: 20,
-    backgroundColor: "#D5D5D5",
+    backgroundColor: "#ADC8A1",
     width: "100%",
     height: 100,
     borderRadius: 10,
     display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: "column",
+    justifyContent: "center",
     padding: 20,
   },
   dashboardCardContent: {
     fontFamily: "GibsonB",
     fontSize: 30,
+    color: "#40693E",
+  },
+  dashboardCardContentSub: {
+    fontFamily: "GibsonR",
+    fontSize: 15,
+    color: "#272A26",
   },
 });

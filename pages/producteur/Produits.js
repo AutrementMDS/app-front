@@ -11,9 +11,11 @@ import { useFocusEffect } from "@react-navigation/native";
 export function ProducteurProductsScreen({ route, navigation }) {
   const [products, setProducts] = React.useState([]);
 
-  React.useEffect(() => {
-    fetchProducts();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchProducts();
+    }, [])
+  );
 
   async function fetchProducts() {
     let products = await getProductsByProducteur();
@@ -30,6 +32,7 @@ export function ProducteurProductsScreen({ route, navigation }) {
             color="black"
             onPress={() => {
               //removeProductById(item.id);
+              navigation.navigate("Product", { product: item });
             }}
             style={{
               backgroundColor: "white",
