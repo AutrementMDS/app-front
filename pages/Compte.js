@@ -2,7 +2,7 @@ import * as React from "react";
 import { Text, View, StyleSheet } from "react-native";
 import { Avatar, Button, Divider } from "react-native-paper";
 import { CustomButton } from "../components/CustomButton";
-import { getItem, setItem, removeItem } from "../store/store.native";
+import { getItem, setItem, removeItem } from "../store/store.js";
 import { useFocusEffect } from "@react-navigation/native";
 
 export function CompteScreen({ route, navigation }) {
@@ -51,7 +51,7 @@ export function CompteScreen({ route, navigation }) {
               <Text style={styles.personal_info_societe}>
                 {user?.role.type === "producteur"
                   ? "Producteur"
-                  : "Utilisateur basique"}
+                  : "Utilisateur"}
               </Text>
             </View>
           </View>

@@ -2,7 +2,7 @@ import * as React from "react";
 import { Text, View, StyleSheet, Dimensions, Image } from "react-native";
 import { IconButton } from "react-native-paper";
 import { getProductById, postOrder } from "../modules/database";
-import { getItem, setItem, removeItem } from "../store/store.native";
+import { getItem, setItem, removeItem } from "../store/store.js";
 import { LinearGradient } from "expo-linear-gradient";
 import { FlatList } from "react-native";
 import { CustomButton } from "../components/CustomButton";
@@ -120,7 +120,9 @@ export function PanierScreen({ route, navigation }) {
                     item.pricetype.data.attributes.name.slice(1)
                   }`}
                 </Text>
-                <Text style={styles.price}>{`${item.total_price}€`}</Text>
+                <Text style={styles.price}>{`${parseFloat(
+                  item.total_price
+                ).toFixed(2)}€`}</Text>
               </View>
             </View>
           </View>

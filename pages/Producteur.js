@@ -7,11 +7,14 @@ import {
   Dimensions,
   TouchableOpacity,
   ScrollView,
+  FlatList,
+  Platform,
 } from "react-native";
 import { Avatar, Card, Divider } from "react-native-paper";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Page } from "../components/Page";
 import { getProducteurImages } from "../modules/database";
+import { isOnWeb } from "../modules/utils";
 
 export const ProducteurScreen = ({ route, navigation }) => {
   const { producteur, producteurID } = route.params;
@@ -84,7 +87,40 @@ export const ProducteurScreen = ({ route, navigation }) => {
         <Text style={styles.description}>{producteur.description}</Text>
 
         <Text style={styles.contentTitle}>LE METIER</Text>
-        {images.map((image, index) => {
+
+        <FlatList
+          numColumns={isOnWeb() ? 3 : 1}
+          data={images}
+          renderItem={({ item, index }) => {
+            return (
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  margin: 5,
+                  width:
+                    Dimensions.get("window").width / (isOnWeb() ? 3 : 1.15),
+                  height: Dimensions.get("window").height / 3,
+                }}
+              >
+                <Image
+                  style={styles.image}
+                  source={{
+                    uri: item.attributes.link,
+                  }}
+                />
+              </View>
+              // <View key={index} style={styles.imageContainer}>
+
+              // </View>
+            );
+          }}
+          keyExtractor={(item) => item.id}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+        />
+        {/* {images.map((image, index) => {
           return (
             <View key={index} style={styles.imageContainer}>
               <Image
@@ -95,7 +131,7 @@ export const ProducteurScreen = ({ route, navigation }) => {
               />
             </View>
           );
-        })}
+        })} */}
       </View>
     </ScrollView>
   );

@@ -1,23 +1,5 @@
 const { default: axios } = require("axios");
-import { getItem, setItem, removeItem } from "../store/store.native";
-
-module.exports = {
-  getProducts,
-  login,
-  register,
-  getProductsReview,
-  getCategories,
-  getProductsByCategory,
-  login,
-  register,
-  getProductById,
-  postOrder,
-  getOrders,
-  getProducteurOrders,
-  getProducteurImages,
-  getProductsByProducteur,
-  updateProduct,
-};
+import { getItem, setItem, removeItem } from "../store/store.js";
 
 //const baseURL = "https://be23-212-106-119-45.eu.ngrok.io/";
 //const baseURL = "http://172.24.232.115:1337/";
@@ -35,7 +17,7 @@ function refactorObject(obj) {
 /**
  * Get all products
  */
-async function getProducts(jwt) {
+export async function getProducts(jwt) {
   let pro = await axios
     .get(baseURL + "products?populate=*", {
       headers: { Authorization: "Bearer " + jwt },
@@ -56,7 +38,7 @@ async function getProducts(jwt) {
 /**
  * Get all products from a producteur
  */
-async function getProductsByProducteur() {
+export async function getProductsByProducteur() {
   let user = await getUser();
   let pro = await axios
     .get(
@@ -81,7 +63,7 @@ async function getProductsByProducteur() {
 /**
  * Get a product by id
  */
-async function getProductById(id) {
+export async function getProductById(id) {
   let user = await getUser();
   let pro = await axios
     .get(baseURL + "products/" + id + "/?populate=*", {
@@ -99,7 +81,7 @@ async function getProductById(id) {
 /**
  * Get all products from a category
  */
-async function getProductsByCategory(jwt, cat) {
+export async function getProductsByCategory(jwt, cat) {
   let pro = await axios
     .get(baseURL + "products?populate=*&filters[category][name][$eq]=" + cat, {
       headers: { Authorization: "Bearer " + jwt },
@@ -121,7 +103,7 @@ async function getProductsByCategory(jwt, cat) {
 /**
  * Get all categories
  */
-async function getCategories(jwt) {
+export async function getCategories(jwt) {
   if (!jwt) return [];
   return await axios
     .get(baseURL + "categories?populate=*", {
@@ -129,7 +111,7 @@ async function getCategories(jwt) {
     })
     .then((res) => {
       if (res.data) {
-        catArray = [];
+        let catArray = [];
         res.data.data.forEach((cat, index) => {
           catArray.push({ id: index + 1, name: cat.attributes.name });
         });
@@ -144,7 +126,7 @@ async function getCategories(jwt) {
 /**
  * Get orders for an user
  */
-async function getOrders(jwt, userID) {
+export async function getOrders(jwt, userID) {
   if (!jwt) return [];
   return await axios
     .get(
@@ -169,7 +151,7 @@ async function getOrders(jwt, userID) {
 /**
  * New order
  */
-async function postOrder(jwt, userID, price, articles, products) {
+export async function postOrder(jwt, userID, price, articles, products) {
   let data = {
     user: userID,
     price: price,
@@ -223,7 +205,7 @@ async function postOrder(jwt, userID, price, articles, products) {
 /**
  * Get all reviews for a product
  */
-async function getProductsReview(jwt, id) {
+export async function getProductsReview(jwt, id) {
   let reviews = await axios
     .get(baseURL + "avis?populate=*&filters[product][id][$eq]=" + id, {
       headers: { Authorization: "Bearer " + jwt },
@@ -257,7 +239,7 @@ async function getProductsReview(jwt, id) {
 /**
  * Login user
  */
-async function login(mail, password) {
+export async function login(mail, password) {
   return await axios
     .post(baseURL + "auth/local", {
       identifier: mail,
@@ -281,7 +263,7 @@ async function login(mail, password) {
 /**
  * Register user
  */
-async function register(username, mail, password) {
+export async function register(username, mail, password) {
   return await axios
     .post(baseURL + "auth/local/register", {
       username: username,
@@ -306,7 +288,7 @@ async function register(username, mail, password) {
 /**
  * Get user informations
  */
-async function me(jwt) {
+export async function me(jwt) {
   const config = {
     headers: { Authorization: `Bearer ${jwt}` },
   };
@@ -325,7 +307,7 @@ async function me(jwt) {
     });
 }
 
-async function getUser() {
+export async function getUser() {
   return new Promise((resolve, reject) => {
     getItem("user").then((user) => {
       user = JSON.parse(user);
@@ -337,7 +319,7 @@ async function getUser() {
 /**
  * Get all orders for a producer
  */
-async function getProducteurOrders() {
+export async function getProducteurOrders() {
   let user = await getUser();
   let orders = await axios
     .get(
@@ -382,7 +364,7 @@ async function getProducteurOrders() {
 /**
  * Get images from producteur to display on the producteur page
  */
-async function getProducteurImages(producteurID) {
+export async function getProducteurImages(producteurID) {
   let user = await getUser();
   return await axios
     .get(baseURL + "images?filters[producteur][id][$eq]=" + producteurID, {
@@ -399,7 +381,13 @@ async function getProducteurImages(producteurID) {
 /**
  * Update product by an productID
  */
-async function updateProduct(productID, name, price, stock, description) {
+export async function updateProduct(
+  productID,
+  name,
+  price,
+  stock,
+  description
+) {
   let user = await getUser();
   let data = {
     name: name,
@@ -425,3 +413,21 @@ async function updateProduct(productID, name, price, stock, description) {
       console.log(err.response);
     });
 }
+
+// module.exports = {
+//   getProducts,
+//   login,
+//   register,
+//   getProductsReview,
+//   getCategories,
+//   getProductsByCategory,
+//   login,
+//   register,
+//   getProductById,
+//   postOrder,
+//   getOrders,
+//   getProducteurOrders,
+//   getProducteurImages,
+//   getProductsByProducteur,
+//   updateProduct,
+// };

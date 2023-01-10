@@ -7,8 +7,15 @@ import { HomeScreen } from "../pages/Home";
 import { CommandeScreen } from "../pages/Commande";
 import { CompteScreen } from "../pages/Compte";
 import { PanierScreen } from "../pages/Panier";
-import { getItem, setItem } from "../store/store.native";
-import { View, Text, ActivityIndicator, Pressable } from "react-native";
+import { getItem, setItem } from "../store/store.js";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  Pressable,
+  Platform,
+  Dimensions,
+} from "react-native";
 import { Login, Register } from "../pages/Auth";
 import { LandingPageScreen } from "../pages/LandingPage";
 import { ProduitDetail } from "../pages/ProduitDetail";
@@ -20,6 +27,7 @@ import { ProducteurHomeScreen } from "../pages/producteur/Home";
 import { ProducteurProductsScreen } from "../pages/producteur/Produits";
 import { ProducteurOrdersScreen } from "../pages/producteur/Commandes";
 import { ProducteurProductScreen } from "../pages/producteur/Product";
+import { isOnWeb } from "../modules/utils";
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -158,57 +166,93 @@ const UserAppScreens = ({ route, navigation }) => {
     <Tab.Navigator
       initialRouteName={defaultRoute}
       backBehavior="initialRoute"
-      screenOptions={({ route }) => ({
-        tabBarStyle: {
-          height: 55,
-          margin: 20,
-          borderRadius: 200,
-          padding: 0,
-          position: "absolute",
-          elevation: 6,
-          overflow: "hidden",
-        },
-        tabBarLabel: ({ focused, color, size }) => {
-          return false;
-        },
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
+      screenOptions={({ route }) => {
+        let tabBarStyle = {};
+        if (isOnWeb()) {
+          tabBarStyle = {
+            height: 55,
+            // margin: 20,
+            // borderRadius: 200,
+            padding: 0,
+            // position: "absolute",
+            elevation: 6,
+            overflow: "hidden",
+            top: 0,
+          };
+        } else {
+          tabBarStyle = {
+            height: 55,
+            margin: 20,
+            borderRadius: 200,
+            padding: 0,
+            position: "absolute",
+            elevation: 6,
+            overflow: "hidden",
+          };
+        }
 
-          if (route.name === "Home") {
-            iconName = "home-outline";
-          } else if (route.name === "Panier") {
-            iconName = "cart-outline";
-          } else if (route.name === "Commande") {
-            iconName = "list-outline";
-          } else if (route.name === "Compte") {
-            iconName = "person-outline";
-          }
+        return {
+          tabBarStyle: tabBarStyle,
+          tabBarLabel: ({ focused, color, size }) => {
+            return false;
+          },
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName, label;
 
-          return (
-            <View
-              style={{
-                display: "flex",
-                height: "80%",
-                width: "80%",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: color == "primary" ? "#40693E" : "transparent",
-                borderRadius: 100,
-                transition: "all 0.2s ease-in-out",
-                elevation: color == "primary" ? 1.5 : 0,
-              }}
-            >
-              <Ionicons
-                name={iconName}
-                size={20}
-                color={focused ? "white" : "black"}
-              />
-            </View>
-          );
-        },
-        tabBarActiveTintColor: "primary",
-        tabBarInactiveTintColor: "black",
-      })}
+            if (route.name === "Home") {
+              iconName = "home-outline";
+              label = "Accueil";
+            } else if (route.name === "Panier") {
+              iconName = "cart-outline";
+              label = "Panier";
+            } else if (route.name === "Commande") {
+              iconName = "list-outline";
+              label = "Commandes";
+            } else if (route.name === "Compte") {
+              iconName = "person-outline";
+              label = "Compte";
+            }
+
+            return (
+              <View
+                style={{
+                  // display: "flex",
+                  height: "80%",
+                  // width: "80%",
+                  width: Dimensions.get("window").width / 5,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "row",
+                  backgroundColor:
+                    color == "primary" ? "#40693E" : "transparent",
+                  borderRadius: 100,
+                  transition: "all 0.2s ease-in-out",
+                  elevation: color == "primary" ? 1.5 : 0,
+                }}
+              >
+                {isOnWeb() && (
+                  <Text
+                    style={{
+                      color: color == "primary" ? "white" : "black",
+                      marginRight: 5,
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    {label}
+                  </Text>
+                )}
+                <Ionicons
+                  name={iconName}
+                  size={20}
+                  color={focused ? "white" : "black"}
+                />
+              </View>
+            );
+          },
+          tabBarActiveTintColor: "primary",
+          tabBarInactiveTintColor: "black",
+        };
+      }}
     >
       <Tab.Screen
         name="LandingPage"
@@ -283,57 +327,92 @@ const ProducteurAppScreens = ({ route, navigation }) => {
     <Tab.Navigator
       initialRouteName={defaultRoute}
       backBehavior="initialRoute"
-      screenOptions={({ route }) => ({
-        tabBarStyle: {
-          height: 55,
-          margin: 20,
-          borderRadius: 200,
-          padding: 0,
-          position: "absolute",
-          elevation: 6,
-          overflow: "hidden",
-        },
-        tabBarLabel: ({ focused, color, size }) => {
-          return false;
-        },
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
+      screenOptions={({ route }) => {
+        let tabBarStyle = {};
+        if (isOnWeb()) {
+          tabBarStyle = {
+            height: 55,
+            // margin: 20,
+            // borderRadius: 200,
+            padding: 0,
+            // position: "absolute",
+            elevation: 6,
+            overflow: "hidden",
+            top: 0,
+          };
+        } else {
+          tabBarStyle = {
+            height: 55,
+            margin: 20,
+            borderRadius: 200,
+            padding: 0,
+            position: "absolute",
+            elevation: 6,
+            overflow: "hidden",
+          };
+        }
+        return {
+          tabBarStyle: tabBarStyle,
+          tabBarLabel: ({ focused, color, size }) => {
+            return false;
+          },
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName, label;
 
-          if (route.name === "Home") {
-            iconName = "home-outline";
-          } else if (route.name === "Produits") {
-            iconName = "cube-outline";
-          } else if (route.name === "Commande") {
-            iconName = "list-outline";
-          } else if (route.name === "Compte") {
-            iconName = "person-outline";
-          }
+            if (route.name === "Home") {
+              iconName = "home-outline";
+              label = "Accueil";
+            } else if (route.name === "Produits") {
+              iconName = "cube-outline";
+              label = "Produits";
+            } else if (route.name === "Commande") {
+              iconName = "list-outline";
+              label = "Commandes";
+            } else if (route.name === "Compte") {
+              iconName = "person-outline";
+              label = "Compte";
+            }
 
-          return (
-            <View
-              style={{
-                display: "flex",
-                height: "80%",
-                width: "80%",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: color == "primary" ? "#40693E" : "transparent",
-                borderRadius: 100,
-                transition: "all 0.2s ease-in-out",
-                elevation: color == "primary" ? 1.5 : 0,
-              }}
-            >
-              <Ionicons
-                name={iconName}
-                size={20}
-                color={focused ? "white" : "black"}
-              />
-            </View>
-          );
-        },
-        tabBarActiveTintColor: "primary",
-        tabBarInactiveTintColor: "black",
-      })}
+            return (
+              <View
+                style={{
+                  // display: "flex",
+                  height: "80%",
+                  // width: "80%",
+                  width: Dimensions.get("window").width / 5,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "row",
+                  backgroundColor:
+                    color == "primary" ? "#40693E" : "transparent",
+                  borderRadius: 100,
+                  transition: "all 0.2s ease-in-out",
+                  elevation: color == "primary" ? 1.5 : 0,
+                }}
+              >
+                {isOnWeb() && (
+                  <Text
+                    style={{
+                      color: color == "primary" ? "white" : "black",
+                      marginRight: 5,
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    {label}
+                  </Text>
+                )}
+                <Ionicons
+                  name={iconName}
+                  size={20}
+                  color={focused ? "white" : "black"}
+                />
+              </View>
+            );
+          },
+          tabBarActiveTintColor: "primary",
+          tabBarInactiveTintColor: "black",
+        };
+      }}
     >
       <Tab.Screen
         name="LandingPage"
@@ -388,6 +467,15 @@ export function Router() {
   const [role, setRole] = React.useState(null);
   const [actualPage, setActualPage] = React.useState("user");
 
+  let style = {};
+  if (isOnWeb()) {
+    style = {
+      position: "relative",
+      left: "50%",
+      transform: "translateX(-50%)",
+    };
+  }
+
   React.useEffect(() => {
     getItem("user").then((nUser) => {
       if (nUser == null) {
@@ -414,26 +502,24 @@ export function Router() {
       );
 
     default:
-      if (actualPage === "producteur") {
-        return (
-          <NavigationContainer>
+      return (
+        // <View style={style}>
+        <NavigationContainer style={style}>
+          {actualPage === "producteur" ? (
             <ProducteurHomeStackScreen
               actualPage={actualPage}
               setActualPage={setActualPage}
               isConnected={isConnected}
             />
-          </NavigationContainer>
-        );
-      } else {
-        return (
-          <NavigationContainer>
+          ) : (
             <UserHomeStackScreen
               actualPage={actualPage}
               setActualPage={setActualPage}
               isConnected={isConnected}
             />
-          </NavigationContainer>
-        );
-      }
+          )}
+        </NavigationContainer>
+        // </View>
+      );
   }
 }

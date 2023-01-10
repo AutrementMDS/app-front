@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   image: {
-    width: Dimensions.get("window").width / 6,
+    width: 50,
     height: 50,
     resizeMode: "contain",
   },

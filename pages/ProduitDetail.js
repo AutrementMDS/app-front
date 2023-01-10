@@ -39,7 +39,7 @@ export const ProduitDetail = ({ route, navigation }) => {
             <View>
               <Text style={styles.name}>{product.name}</Text>
               <Text style={styles.price}>
-                {parseInt(product.price).toFixed(2)}€ /{" "}
+                {parseFloat(product.price).toFixed(2)}€ /{" "}
                 {product.pricetype.data.attributes.name
                   .charAt(0)
                   .toUpperCase() +

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Text, View, FlatList, StyleSheet, Dimensions } from "react-native";
 import { getOrders } from "../modules/database";
-import { getItem } from "../store/store.native";
+import { getItem } from "../store/store.js";
 import "intl";
 import "intl/locale-data/jsonp/fr";
 import { DateTime } from "luxon";

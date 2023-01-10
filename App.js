@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Router } from "./router/Router";
 import { useFonts } from "expo-font";
+// import "./assets/style/style.css";
 
 export default function App() {
   const [loaded] = useFonts({
@@ -16,8 +17,3 @@ export default function App() {
 
   return loaded && <Router></Router>;
 }
-// db.createUser({
-//   user: "myUserAdmin",
-//   pwd: "abc123",
-//   roles: [{ role: "userAdminAnyDatabase", db: "admin" }],
-// });

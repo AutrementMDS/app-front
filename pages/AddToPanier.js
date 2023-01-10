@@ -11,7 +11,7 @@ import {
 import { Card } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
 import { CustomInput } from "../components/CustomButton";
-import { getItem, setItem, removeItem } from "../store/store.native";
+import { getItem, setItem, removeItem } from "../store/store.js";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 export const AddToPanier = ({ route, navigation }) => {
@@ -89,7 +89,7 @@ export const AddToPanier = ({ route, navigation }) => {
             <View>
               <Text style={styles.name}>{product.name}</Text>
               <Text style={styles.price}>
-                {parseInt(product.price).toFixed(2)}€ /{" "}
+                {parseFloat(product.price).toFixed(2)}€ /{" "}
                 {product.pricetype.data.attributes.name
                   .charAt(0)
                   .toUpperCase() +

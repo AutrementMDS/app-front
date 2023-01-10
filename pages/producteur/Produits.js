@@ -1,12 +1,20 @@
 import * as React from "react";
-import { Text, View, StyleSheet, Dimensions, Image } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Dimensions,
+  Image,
+  Platform,
+} from "react-native";
 import { IconButton } from "react-native-paper";
 import { getProductsByProducteur } from "../../modules/database";
-import { getItem, setItem, removeItem } from "../../store/store.native";
+import { getItem, setItem, removeItem } from "../../store/store.js";
 import { LinearGradient } from "expo-linear-gradient";
 import { FlatList } from "react-native";
 import { CustomButton } from "../../components/CustomButton";
 import { useFocusEffect } from "@react-navigation/native";
+import { isOnWeb } from "../../modules/utils";
 
 export function ProducteurProductsScreen({ route, navigation }) {
   const [products, setProducts] = React.useState([]);
@@ -24,64 +32,60 @@ export function ProducteurProductsScreen({ route, navigation }) {
 
   const Product = ({ item, index }) => {
     return (
-      <>
-        <View style={styles.productContainer}>
-          <IconButton
-            icon="pencil-outline"
-            size={25}
-            color="black"
-            onPress={() => {
-              //removeProductById(item.id);
-              navigation.navigate("Product", { product: item });
-            }}
-            style={{
-              backgroundColor: "white",
-              margin: 0,
-              position: "absolute",
-              top: 5,
-              right: 5,
-              zIndex: 300,
-            }}
-            animated={true}
-          />
-          <Image source={{ uri: item.image }} style={styles.image}></Image>
+      <View style={styles.productContainer}>
+        <IconButton
+          icon="pencil-outline"
+          size={25}
+          color="black"
+          onPress={() => {
+            //removeProductById(item.id);
+            navigation.navigate("Product", { product: item });
+          }}
+          style={{
+            backgroundColor: "white",
+            margin: 0,
+            position: "absolute",
+            top: 5,
+            right: 5,
+            zIndex: 300,
+          }}
+          animated={true}
+        />
+        <Image source={{ uri: item.image }} style={styles.image}></Image>
 
-          <LinearGradient
-            colors={["rgba(0,0,0,0.1)", "rgba(0,0,0,0.8)"]}
-            style={styles.fade}
-          />
-          <View style={styles.info}>
+        <LinearGradient
+          colors={["rgba(0,0,0,0.1)", "rgba(0,0,0,0.8)"]}
+          style={styles.fade}
+        />
+        <View style={styles.info}>
+          <View
+            style={{
+              width: "100%",
+            }}
+          >
+            <Text style={styles.name}>{item.name}</Text>
             <View
               style={{
-                width: "100%",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
               }}
             >
-              <Text style={styles.name}>{item.name}</Text>
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Text style={styles.price}>
-                  {`${item.stock} ${
-                    item.pricetype.data.attributes.name
-                      .charAt(0)
-                      .toUpperCase() +
-                    item.pricetype.data.attributes.name.slice(1)
-                  }`}
-                </Text>
-                <Text style={styles.price}>{`${item.price}€ / ${
+              <Text style={styles.price}>
+                {`${item.stock} ${
                   item.pricetype.data.attributes.name.charAt(0).toUpperCase() +
                   item.pricetype.data.attributes.name.slice(1)
-                }`}</Text>
-              </View>
+                }`}
+              </Text>
+              <Text style={styles.price}>{`${item.price}€ / ${
+                item.pricetype.data.attributes.name.charAt(0).toUpperCase() +
+                item.pricetype.data.attributes.name.slice(1)
+              }`}</Text>
             </View>
           </View>
         </View>
-      </>
+      </View>
     );
   };
 
@@ -95,21 +99,50 @@ export function ProducteurProductsScreen({ route, navigation }) {
     );
   }
 
-  return (
-    <FlatList
-      contentContainerStyle={{ paddingBottom: 80 }}
-      data={products}
-      renderItem={Product}
-      keyExtractor={(item, index) => String(index)}
-      showsHorizontalScrollIndicator={false}
-      showsVerticalScrollIndicator={false}
-    />
-  );
+  if (isOnWeb()) {
+    return (
+      <FlatList
+        numColumns={3}
+        data={products}
+        renderItem={({ item, index }) => {
+          return (
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "column",
+                margin: 5,
+                width: Dimensions.get("window").width / 3,
+                height: Dimensions.get("window").height / 3,
+              }}
+            >
+              <Product item={item} index={index} />
+            </View>
+          );
+        }}
+        keyExtractor={(item) => item.id}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+      />
+    );
+  } else {
+    return (
+      <FlatList
+        contentContainerStyle={{ paddingBottom: 80 }}
+        data={products}
+        renderItem={({ item, index }) => {
+          return <Product item={item} index={index} />;
+        }}
+        keyExtractor={(item) => item.id}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+      />
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   productContainer: {
-    height: Dimensions.get("window").height / 4,
+    height: Dimensions.get("window").height / 3,
     position: "relative",
     margin: 10,
     borderRadius: 10,

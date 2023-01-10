@@ -8,6 +8,8 @@ import {
   Dimensions,
   Pressable,
   RefreshControl,
+  ScrollView,
+  Platform,
 } from "react-native";
 import { Card } from "react-native-paper";
 import {
@@ -18,7 +20,7 @@ import {
   getCategories,
   getProductsByCategory,
 } from "../modules/database";
-import { getItem } from "../store/store.native";
+import { getItem } from "../store/store.js";
 import { Page } from "../components/Page";
 import { HomeHeader } from "../components/home/HomeHeader";
 import icon_all from "../assets/logo/basic_logo.png";
@@ -30,6 +32,10 @@ import icon_boisson from "../assets/icons/icon_boisson.png";
 import icon_alcool from "../assets/icons/icon_alcool.png";
 import icon_autre from "../assets/icons/icon_autre.png";
 import icon_dessert from "../assets/icons/icon_dessert.png";
+import { isOnWeb } from "../modules/utils";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { LinearGradient } from "expo-linear-gradient";
+import map from "../assets/images/map.jpg";
 
 export const HomeScreen = ({ navigation }) => {
   const [products, setProducts] = React.useState([]);
@@ -178,7 +184,6 @@ export const HomeScreen = ({ navigation }) => {
     if (item.empty) {
       return (
         <View>
-          {index == 0 && <CategoriesList />}
           <View style={styles.emptyProductsContainer}>
             <Text style={styles.emptyProducts}>{item.text}</Text>
           </View>
@@ -187,7 +192,6 @@ export const HomeScreen = ({ navigation }) => {
     }
     return (
       <View>
-        {index == 0 && <CategoriesList />}
         <Pressable
           onPress={() => {
             navigation.navigate("ProduitDetail", { product: item });
@@ -196,7 +200,7 @@ export const HomeScreen = ({ navigation }) => {
           <Card style={styles.cardContainer}>
             <View
               style={{
-                height: Dimensions.get("window").height / 4,
+                height: Dimensions.get("window").height / 3.5,
               }}
             >
               <Image source={{ uri: item.image }} style={styles.image}></Image>
@@ -205,7 +209,7 @@ export const HomeScreen = ({ navigation }) => {
               <View>
                 <Text style={styles.name}>{item.name}</Text>
                 <Text style={styles.price}>
-                  {parseInt(item.price).toFixed(2)}€ /{" "}
+                  {parseFloat(item.price).toFixed(2)}€ /{" "}
                   {item.pricetype.data.attributes.name.charAt(0).toUpperCase() +
                     item.pricetype.data.attributes.name.slice(1)}
                 </Text>
@@ -266,22 +270,157 @@ export const HomeScreen = ({ navigation }) => {
   return (
     <Page>
       <HomeHeader />
-      <FlatList
-        contentContainerStyle={{ paddingBottom: 80 }}
-        data={products}
-        renderItem={CardsItem}
-        keyExtractor={(item) => item.id}
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => {
-              searchByCategory(actualCat);
+      <View
+        style={{
+          // height: 260,
+          height: 100,
+        }}
+      >
+        <CategoriesList />
+        {/* <View
+          style={{
+            backgroundColor: "#DE6E2F",
+            height: 150,
+            justifyContent: "space-between",
+            alignItems: "center",
+            // width: Dimensions.get("window").width,
+            borderRadius: 10,
+            marginTop: 10,
+            marginBottom: 10,
+            padding: 20,
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          <LinearGradient
+            // Background Linear Gradient
+            colors={["transparent", "#381704"]}
+            style={{
+              position: "absolute",
+              right: 0,
+              bottom: 0,
+              height: "100%",
+              width: "150%",
             }}
           />
-        }
-      />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <Text
+              style={{
+                color: "#fff",
+                fontSize: 20,
+                fontFamily: "GibsonB",
+              }}
+            >
+              Nouvelle recette d'automne disponible !
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <Text
+              style={{
+                color: "#fff",
+                fontSize: 15,
+                fontFamily: "GibsonB",
+
+                marginTop: 10,
+                marginBottom: 10,
+              }}
+            >
+              Crumble de potiron au parmesan
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <Text
+              style={{
+                color: "#FFC5A5",
+                fontSize: 20,
+                fontFamily: "GibsonB",
+              }}
+            >
+              Découvrir
+            </Text>
+            <Ionicons
+              style={{
+                color: "#FFC5A5",
+              }}
+              name="arrow-forward"
+              size={20}
+            />
+          </View>
+        </View> */}
+      </View>
+      {isOnWeb() ? (
+        <FlatList
+          numColumns={3}
+          contentContainerStyle={{ paddingBottom: 30 }}
+          data={products}
+          renderItem={({ item, index }) => {
+            return (
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "column",
+                  margin: 5,
+                  width: Dimensions.get("window").width / 3,
+                  height: Dimensions.get("window").height / 2.5,
+                }}
+              >
+                <CardsItem item={item} index={index} />
+              </View>
+            );
+          }}
+          keyExtractor={(item) => item.id}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => {
+                searchByCategory(actualCat);
+              }}
+            />
+          }
+        />
+      ) : (
+        <FlatList
+          contentContainerStyle={{ paddingBottom: 20 }}
+          data={products}
+          renderItem={({ item, index }) => {
+            return <CardsItem item={item} index={index} />;
+          }}
+          keyExtractor={(item) => item.id}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => {
+                searchByCategory(actualCat);
+              }}
+            />
+          }
+        />
+      )}
     </Page>
   );
 };
@@ -352,6 +491,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "space-between",
+    width: "100%",
+    height: "100%",
     //padding: 5,
   },
   listItemIcon: {

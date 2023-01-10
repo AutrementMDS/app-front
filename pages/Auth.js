@@ -3,7 +3,7 @@ import { View, StyleSheet, Dimensions, Text, Image } from "react-native";
 import { Button } from "react-native-paper";
 import { CustomButton, CustomInput } from "../components/CustomButton";
 import { login, register } from "../modules/database";
-import { getItem, setItem } from "../store/store.native";
+import { getItem, setItem } from "../store/store.js";
 import logo from "../assets/logo/basic_logo.png";
 
 export function Login({ navigation }) {
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   image: {
-    width: Dimensions.get("window").width / 6,
+    width: 50,
     height: 50,
     resizeMode: "contain",
   },

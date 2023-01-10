@@ -1,9 +1,13 @@
-import { View, Text, SafeAreaView } from "react-native";
+import { View, Text, SafeAreaView, Platform } from "react-native";
+import { isOnWeb } from "../modules/utils";
 
 export const Page = (props) => {
-  return (
-    <SafeAreaView style={{ padding: 10, paddingTop: 50, paddingBottom: 50 }}>
-      {props.children}
-    </SafeAreaView>
-  );
+  let style = {};
+  if (isOnWeb()) {
+    style = { padding: 10, flex: 1 };
+  } else {
+    style = { padding: 10, paddingTop: 50, paddingBottom: 50, flex: 1 };
+  }
+
+  return <SafeAreaView style={style}>{props.children}</SafeAreaView>;
 };
