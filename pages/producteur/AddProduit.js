@@ -1,3 +1,4 @@
+import { useFocusEffect } from "@react-navigation/native";
 import * as React from "react";
 import {
   Text,
@@ -7,50 +8,56 @@ import {
   Dimensions,
   ScrollView,
 } from "react-native";
-import { Card } from "react-native-paper";
+import { Button, Card } from "react-native-paper";
 import { CustomButton, CustomInput } from "../../components/CustomButton";
 import { updateProduct } from "../../modules/database";
+import { getItem } from "../../store/store";
+import DocumentPicker from "react-native-document-picker";
 
-export function ProducteurProductScreen({ route, navigation }) {
-  const [product, setProduct] = React.useState(route.params.product);
+export function ProducteurAddProductScreen({ route, navigation }) {
+  const [categories, setCategories] = React.useState([]);
+  const [pricetype, setPriceType] = React.useState([]);
 
-  const [name, setName] = React.useState(product.name);
-  const [price, setPrice] = React.useState(product.price);
-  const [stock, setStock] = React.useState(product.stock);
-  const [description, setDescription] = React.useState(product.description);
+  /* Product fields */
+  const [name, setName] = React.useState("");
+  const [price, setPrice] = React.useState("");
+  const [stock, setStock] = React.useState("");
+  const [description, setDescription] = React.useState("");
+  const [productPriceType, setProductPriceType] = React.useState("");
+  const [productCategory, setProductCategory] = React.useState("");
+  const [productImage, setProductImage] = React.useState("");
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getItem("user").then(async (user) => {
+        user = JSON.parse(user);
+      });
+    }, [])
+  );
 
   async function saveProduct() {
-    await updateProduct(product.id, name, price, stock, description);
+    // await updateProduct(product.id, name, price, stock, description);
     navigation.pop();
   }
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        {/* <TouchableOpacity
-          activeOpacity={0.7}
-          style={styles.touchableOpacityStyle}
-          onPress={() =>
-            navigation.navigate("AddToPanier", {
-              product: route.params?.product,
-            })
-          }
-        >
-          <Ionicons name="add-outline" size={28} color="white" />
-        </TouchableOpacity> */}
         <Card style={styles.cardContainer}>
-          <View
+          <View>
+            <CustomButton
+              text="Ajouter une image"
+              type="primary"
+              onPress={() => {}}
+            />
+          </View>
+          {/* <View
             style={{
               height: Dimensions.get("window").height / 4,
             }}
           >
-            <Image
-              source={{
-                uri: `http://51.210.104.99:1556${product.image.data.attributes.url}`,
-              }}
-              style={styles.image}
-            ></Image>
-          </View>
+            {/* <Image source={{ uri: product.image }} style={styles.image}></Image> */}
+          {/* </View> */}
           <View style={styles.info}>
             {/* <View>
               <Text style={styles.name}>{product.name}</Text>
@@ -108,9 +115,11 @@ export function ProducteurProductScreen({ route, navigation }) {
                 }}
               />
               <CustomButton
-                text="Supprimer"
+                text="Annuler"
                 type="secondary"
-                onPress={() => {}}
+                onPress={() => {
+                  navigation.pop();
+                }}
               />
             </View>
           </View>

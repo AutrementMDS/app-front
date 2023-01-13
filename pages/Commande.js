@@ -6,6 +6,7 @@ import "intl";
 import "intl/locale-data/jsonp/fr";
 import { DateTime } from "luxon";
 import { useFocusEffect } from "@react-navigation/native";
+import { Divider } from "react-native-paper";
 
 export function CommandeScreen({ route, navigation }) {
   const [orders, setOrders] = React.useState([]);
@@ -46,9 +47,13 @@ export function CommandeScreen({ route, navigation }) {
 
 function getCorrectState(state) {
   if (state == "waiting") {
-    return "En attente";
+    return "En préparation";
   } else if (state == "delivered") {
-    return "Livré";
+    return "Prête";
+  } else if (state == "canceled") {
+    return "Annulée";
+  } else if (state == "paid") {
+    return "Récupérée";
   }
 }
 
@@ -71,8 +76,8 @@ const OrderItem = ({ item, index }) => {
               alignItems: "center",
             }}
           >
-            <Text style={styles.orderTitle}>Commande n°{item.id}</Text>
-            <Text style={styles.orderState}>
+            <Text style={styles.orderTitle}>Commande #{item.id}</Text>
+            <Text style={styles[item.attributes.state]}>
               {getCorrectState(item.attributes.state)}
             </Text>
           </View>
@@ -84,8 +89,22 @@ const OrderItem = ({ item, index }) => {
               item.attributes.articles > 1 ? "articles" : "article"
             }`}
           </Text>
-          <Text style={styles.orderPrice}>{`${item.attributes.price}€`}</Text>
+          <Text style={styles.orderPrice}>{`${item.attributes.price.toFixed(
+            2
+          )}€`}</Text>
         </View>
+        <Divider
+          bold={true}
+          style={{
+            color: "#384539",
+          }}
+        />
+        <Text
+          style={styles.dateRetrait}
+        >{`Retrait prévu le : ${item.attributes.dateRetrait
+          .split("-")
+          .reverse()
+          .join("/")} à Annecy`}</Text>
       </View>
     </>
   );
@@ -93,26 +112,66 @@ const OrderItem = ({ item, index }) => {
 
 const styles = StyleSheet.create({
   orderContainer: {
-    backgroundColor: "#40693E",
     margin: 10,
     borderRadius: 10,
     padding: 10,
-    elevation: 6,
+    elevation: 3,
+    backgroundColor: "#fff",
   },
   orderTitle: {
     fontSize: 20,
-    color: "#E1E7DF",
+    color: "#747e75",
     fontFamily: "GibsonB",
   },
-  orderState: {
-    fontSize: 15,
-    color: "#E1E7DF",
-    fontFamily: "GibsonB",
+  waiting: {
+    fontSize: 11,
+    color: "#000002",
+    backgroundColor: "#eff6ff",
+    borderRadius: 5,
+    fontFamily: "GibsonR",
+    borderWidth: 1,
+    borderColor: "#cbdff8",
+    paddingTop: 2,
+    paddingBottom: 2,
+    paddingLeft: 5,
+    paddingRight: 5,
+  },
+  delivered: {
+    fontSize: 11,
+    color: "#000002",
+    backgroundColor: "#f3ffef",
+    borderRadius: 5,
+    fontFamily: "GibsonR",
+    borderWidth: 1,
+    borderColor: "#d6f8cc",
+    paddingTop: 2,
+    paddingBottom: 2,
+    paddingLeft: 5,
+    paddingRight: 5,
+  },
+  paid: {
+    fontSize: 11,
+    color: "#000002",
+    backgroundColor: "#fffeef",
+    borderRadius: 5,
+    fontFamily: "GibsonR",
+    borderWidth: 1,
+    borderColor: "#f8f7cb",
+    paddingTop: 2,
+    paddingBottom: 2,
+    paddingLeft: 5,
+    paddingRight: 5,
   },
   orderDate: {
     fontSize: 15,
     color: "#7E8B78",
     fontFamily: "GibsonR",
+  },
+  dateRetrait: {
+    fontSize: 15,
+    color: "#37483a",
+    fontFamily: "GibsonR",
+    marginTop: 10,
   },
   orderInfoContainer: {
     display: "flex",
@@ -121,12 +180,12 @@ const styles = StyleSheet.create({
     alignContent: "center",
   },
   orderInfo: {
-    color: "#ADC8A1",
+    color: "#384539",
     fontFamily: "GibsonR",
   },
   orderPrice: {
     fontSize: 22,
-    color: "#E1E7DF",
+    color: "#384539",
     fontFamily: "GibsonB",
   },
   emptyProductsContainer: {

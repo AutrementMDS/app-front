@@ -51,7 +51,12 @@ export function ProducteurProductsScreen({ route, navigation }) {
           }}
           animated={true}
         />
-        <Image source={{ uri: item.image }} style={styles.image}></Image>
+        <Image
+          source={{
+            uri: `http://51.210.104.99:1556${item.image.data.attributes.url}`,
+          }}
+          style={styles.image}
+        ></Image>
 
         <LinearGradient
           colors={["rgba(0,0,0,0.1)", "rgba(0,0,0,0.8)"]}
@@ -106,17 +111,32 @@ export function ProducteurProductsScreen({ route, navigation }) {
         data={products}
         renderItem={({ item, index }) => {
           return (
-            <View
-              style={{
-                flex: 1,
-                flexDirection: "column",
-                margin: 5,
-                width: Dimensions.get("window").width / 3,
-                height: Dimensions.get("window").height / 3,
-              }}
-            >
-              <Product item={item} index={index} />
-            </View>
+            <>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "column",
+                  margin: 5,
+                  width: Dimensions.get("window").width / 3,
+                  height: Dimensions.get("window").height / 3,
+                }}
+              >
+                <Product item={item} index={index} />
+              </View>
+              {index == products.length - 1 && (
+                <View
+                  style={{
+                    margin: 10,
+                  }}
+                >
+                  <CustomButton
+                    type="primary"
+                    text="Valider mon panier"
+                    onPress={async () => {}}
+                  ></CustomButton>
+                </View>
+              )}
+            </>
           );
         }}
         keyExtractor={(item) => item.id}
@@ -130,7 +150,26 @@ export function ProducteurProductsScreen({ route, navigation }) {
         contentContainerStyle={{ paddingBottom: 80 }}
         data={products}
         renderItem={({ item, index }) => {
-          return <Product item={item} index={index} />;
+          return (
+            <>
+              <Product item={item} index={index} />
+              {index == products.length - 1 && (
+                <View
+                  style={{
+                    margin: 10,
+                  }}
+                >
+                  <CustomButton
+                    type="primary"
+                    text="Ajouter un produit"
+                    onPress={() => {
+                      navigation.navigate("AddProduct");
+                    }}
+                  ></CustomButton>
+                </View>
+              )}
+            </>
+          );
         }}
         keyExtractor={(item) => item.id}
         showsHorizontalScrollIndicator={false}

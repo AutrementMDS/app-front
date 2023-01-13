@@ -25,6 +25,7 @@ import { AddToPanier } from "../pages/AddToPanier";
 import { ProducteurScreen } from "../pages/Producteur";
 import { ProducteurHomeScreen } from "../pages/producteur/Home";
 import { ProducteurProductsScreen } from "../pages/producteur/Produits";
+import { ProducteurAddProductScreen } from "../pages/producteur/AddProduit";
 import { ProducteurOrdersScreen } from "../pages/producteur/Commandes";
 import { ProducteurProductScreen } from "../pages/producteur/Product";
 import { isOnWeb } from "../modules/utils";
@@ -139,6 +140,24 @@ const ProducteurHomeStackScreen = ({
         component={ProducteurProductScreen}
         options={({ route, navigation }) => ({
           title: route.params?.product?.name || "",
+          headerLeft: () => (
+            <IconButton
+              icon="arrow-left"
+              size={25}
+              color="black"
+              onPress={async () => {
+                navigation.pop();
+              }}
+            />
+          ),
+        })}
+      />
+
+      <HomeStack.Screen
+        name="AddProduct"
+        component={ProducteurAddProductScreen}
+        options={({ route, navigation }) => ({
+          title: "Nouveau produit",
           headerLeft: () => (
             <IconButton
               icon="arrow-left"
@@ -291,7 +310,7 @@ const UserAppScreens = ({ route, navigation }) => {
                     fontWeight: "bold",
                     marginRight: 10,
                   }}
-                >{`Total: ${panierPrice}€`}</Text>
+                >{`Total: ${panierPrice.toFixed(2)}€`}</Text>
               );
             },
           };

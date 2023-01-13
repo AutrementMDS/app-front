@@ -36,6 +36,27 @@ export async function getProducts(jwt) {
 }
 
 /**
+ * Get products by string query
+ */
+export const getCustomQuery = async (jwt, query) => {
+  let pro = await axios
+    .get(baseURL + `products?populate=*&filters[name][$contains]=${query}`, {
+      headers: { Authorization: "Bearer " + jwt },
+    })
+    .then((res) => {
+      let productsArray = [];
+      res.data.data.forEach((product) => {
+        productsArray.push(refactorObject(product));
+      });
+      return productsArray;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  return pro;
+};
+
+/**
  * Get all products from a producteur
  */
 export async function getProductsByProducteur() {
@@ -152,12 +173,25 @@ export async function getOrders(jwt, userID) {
  * New order
  */
 export async function postOrder(jwt, userID, price, articles, products) {
+  let date = new Date();
+  let actualDay = date.getDate(); // - 1; // like 13 janvier
+  let actualDayInWeek = date.getDay(); // - 1; // like 13 janvier
+
+  if (actualDayInWeek <= 3) {
+    let path = 5 - actualDayInWeek;
+    date.setDate(actualDay + path);
+  } else {
+    let path = 5 - actualDayInWeek + 7;
+    date.setDate(actualDay + path);
+  }
+
   let data = {
     user: userID,
     price: price,
     articles: articles,
     products: products,
     state: "waiting",
+    dateRetrait: date,
   };
 
   return await axios
@@ -182,6 +216,7 @@ export async function postOrder(jwt, userID, price, articles, products) {
           orderID: orderID.toString(),
           price: product.price,
           product: product.product,
+          dateRetrait: date,
           client: userID,
         };
 
@@ -193,12 +228,12 @@ export async function postOrder(jwt, userID, price, articles, products) {
           )
           .then((response) => {})
           .catch((err) => {
-            console.log(err.response);
+            console.log(err.response?.data?.error?.message);
           });
       }
     })
     .catch((err) => {
-      console.log(err.response);
+      console.log(err.response?.data?.error?.message);
     });
 }
 
@@ -346,6 +381,7 @@ export async function getProducteurOrders() {
         product: order.attributes.product,
         quantity: order.attributes.quantity,
         price: order.attributes.price,
+        dateRetrait: order.attributes.dateRetrait,
       };
       resReturn[order.attributes.orderID].push(obj);
     } else {
@@ -353,6 +389,7 @@ export async function getProducteurOrders() {
         product: order.attributes.product,
         quantity: order.attributes.quantity,
         price: order.attributes.price,
+        dateRetrait: order.attributes.dateRetrait,
       };
       resReturn[order.attributes.orderID].push(obj);
     }

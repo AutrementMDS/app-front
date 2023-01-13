@@ -59,6 +59,8 @@ export function CustomInput(props) {
           keyboardType={props.type}
           // numberOfLines={10}
           multiline={true}
+          min="0"
+          step="1"
         />
       </View>
     );

@@ -33,7 +33,12 @@ export const ProduitDetail = ({ route, navigation }) => {
               height: Dimensions.get("window").height / 4,
             }}
           >
-            <Image source={{ uri: product.image }} style={styles.image}></Image>
+            <Image
+              source={{
+                uri: `http://51.210.104.99:1556${product.image.data.attributes.url}`,
+              }}
+              style={styles.image}
+            ></Image>
           </View>
           <View style={styles.info}>
             <View>
@@ -48,9 +53,9 @@ export const ProduitDetail = ({ route, navigation }) => {
             </View>
             <View style={styles.noteContainer}>
               <Text style={styles.note}>
-                {product.review == -1
+                {(product.review == -1
                   ? "-"
-                  : parseFloat(product.review).toFixed(1)}
+                  : parseFloat(product.review).toFixed(1)) + "/5"}
               </Text>
             </View>
           </View>
@@ -105,7 +110,7 @@ export const ProduitDetail = ({ route, navigation }) => {
               />
               <Text
                 style={{
-                  textAlign: "center",
+                  textAlign: "left",
                 }}
               >
                 {product.description}
@@ -205,7 +210,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   note: {
-    fontSize: 22,
+    fontSize: 20,
     color: "black",
     fontFamily: "GibsonB",
   },

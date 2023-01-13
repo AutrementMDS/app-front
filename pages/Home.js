@@ -19,6 +19,7 @@ import {
   getProductsReview,
   getCategories,
   getProductsByCategory,
+  getCustomQuery,
 } from "../modules/database";
 import { getItem } from "../store/store.js";
 import { Page } from "../components/Page";
@@ -203,7 +204,12 @@ export const HomeScreen = ({ navigation }) => {
                 height: Dimensions.get("window").height / 3.5,
               }}
             >
-              <Image source={{ uri: item.image }} style={styles.image}></Image>
+              <Image
+                source={{
+                  uri: `http://51.210.104.99:1556${item.image.data.attributes.url}`,
+                }}
+                style={styles.image}
+              ></Image>
             </View>
             <View style={styles.info}>
               <View>
@@ -216,7 +222,9 @@ export const HomeScreen = ({ navigation }) => {
               </View>
               <View style={styles.noteContainer}>
                 <Text style={styles.note}>
-                  {item.review == -1 ? "-" : parseFloat(item.review).toFixed(1)}
+                  {(item.review == -1
+                    ? "-"
+                    : parseFloat(item.review).toFixed(1)) + "/5"}
                 </Text>
               </View>
             </View>
@@ -267,107 +275,33 @@ export const HomeScreen = ({ navigation }) => {
     );
   };
 
+  const onSearchChange = async (value) => {
+    let products = await getCustomQuery(user.jwt, value);
+
+    var promises = [];
+
+    for (let product of products) {
+      promises.push(
+        getProductsReview(user.jwt, product.id).then((review) => {
+          product.review = review;
+        })
+      );
+    }
+
+    Promise.all(promises).then(() => {
+      setProducts(products);
+    });
+  };
+
   return (
     <Page>
-      <HomeHeader />
+      <HomeHeader onSearchChange={onSearchChange} />
       <View
         style={{
-          // height: 260,
           height: 100,
         }}
       >
         <CategoriesList />
-        {/* <View
-          style={{
-            backgroundColor: "#DE6E2F",
-            height: 150,
-            justifyContent: "space-between",
-            alignItems: "center",
-            // width: Dimensions.get("window").width,
-            borderRadius: 10,
-            marginTop: 10,
-            marginBottom: 10,
-            padding: 20,
-            position: "relative",
-            overflow: "hidden",
-          }}
-        >
-          <LinearGradient
-            // Background Linear Gradient
-            colors={["transparent", "#381704"]}
-            style={{
-              position: "absolute",
-              right: 0,
-              bottom: 0,
-              height: "100%",
-              width: "150%",
-            }}
-          />
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              width: "100%",
-            }}
-          >
-            <Text
-              style={{
-                color: "#fff",
-                fontSize: 20,
-                fontFamily: "GibsonB",
-              }}
-            >
-              Nouvelle recette d'automne disponible !
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              width: "100%",
-            }}
-          >
-            <Text
-              style={{
-                color: "#fff",
-                fontSize: 15,
-                fontFamily: "GibsonB",
-
-                marginTop: 10,
-                marginBottom: 10,
-              }}
-            >
-              Crumble de potiron au parmesan
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-end",
-              alignItems: "center",
-              width: "100%",
-            }}
-          >
-            <Text
-              style={{
-                color: "#FFC5A5",
-                fontSize: 20,
-                fontFamily: "GibsonB",
-              }}
-            >
-              Découvrir
-            </Text>
-            <Ionicons
-              style={{
-                color: "#FFC5A5",
-              }}
-              name="arrow-forward"
-              size={20}
-            />
-          </View>
-        </View> */}
       </View>
       {isOnWeb() ? (
         <FlatList
@@ -470,7 +404,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   note: {
-    fontSize: 22,
+    fontSize: 20,
     color: "black",
     fontFamily: "GibsonB",
   },

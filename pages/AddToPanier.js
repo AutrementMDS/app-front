@@ -16,16 +16,30 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 export const AddToPanier = ({ route, navigation }) => {
   let { product } = route.params;
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState("");
   const [actualItem, setActualItem] = React.useState(null);
 
   function calculatePrice(nv) {
     nv = nv ? nv : value;
+    if (!nv) nv = 0;
     return parseFloat(nv.toString().replace(",", ".")) * product.price;
   }
 
+  const INT = ["botte", "pièce"];
+
   function handleChange(nv) {
-    if (!nv) nv = 0;
+    if (INT.includes(product.pricetype.data.attributes.name)) {
+      nv = nv.replace(/[^0-9]/g, "");
+    } else {
+      nv = nv.replace(/[^0-9,]/g, "");
+      let group = nv.split(",");
+      if (group[1]) {
+        if (group[1].length > 2) {
+          nv = group[0] + "," + group[1].substring(0, 2);
+        }
+      }
+    }
+    if (!nv) nv = "";
     setValue(nv);
     setActualItem(
       JSON.stringify({
@@ -78,7 +92,12 @@ export const AddToPanier = ({ route, navigation }) => {
             position: "relative",
           }}
         >
-          <Image source={{ uri: product.image }} style={styles.image}></Image>
+          <Image
+            source={{
+              uri: `http://51.210.104.99:1556${product.image.data.attributes.url}`,
+            }}
+            style={styles.image}
+          ></Image>
 
           <LinearGradient
             // Background Linear Gradient
@@ -119,30 +138,27 @@ export const AddToPanier = ({ route, navigation }) => {
             <CustomInput
               style={{
                 flex: 1,
+                width: "100%",
               }}
               type="numeric"
-              placeholder="0.00"
+              placeholder={
+                INT.includes(product.pricetype.data.attributes.name)
+                  ? "0"
+                  : "0,00"
+              }
               value={value}
               controller={handleChange}
             />
-            <View
+            {/* <Text
               style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
+                fontSize: 22,
+                color: "black",
+                fontFamily: "GibsonB",
+                marginLeft: 10,
               }}
             >
-              <Text
-                style={{
-                  fontSize: 22,
-                  color: "black",
-                  fontFamily: "GibsonB",
-                  marginLeft: 10,
-                }}
-              >
-                {product.pricetype.data.attributes.name}
-              </Text>
-            </View>
+              {product.pricetype.data.attributes.name}
+            </Text> */}
           </View>
 
           <View

@@ -29,7 +29,7 @@ export const HomeHeader = (props) => {
     return (
       <View style={styles.container}>
         {/* <Image source={logo} alt="logo" style={styles.image} /> */}
-        <SearchBar />
+        <SearchBar onSearchChange={props.onSearchChange} />
       </View>
     );
   }

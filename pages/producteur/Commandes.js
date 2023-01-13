@@ -4,6 +4,7 @@ import logo from "../../assets/logo/basic_logo.png";
 import React, { useEffect } from "react";
 import { getProducteurOrders, getProductById } from "../../modules/database";
 import { useFocusEffect } from "@react-navigation/native";
+import { DateTime } from "luxon";
 
 export function ProducteurOrdersScreen({ route, navigation }) {
   const [orders, setOrders] = React.useState([]);
@@ -51,8 +52,17 @@ export function ProducteurOrdersScreen({ route, navigation }) {
           let pack = orders[key];
           return (
             <View style={styles.card} key={index}>
-              <Text style={styles.cardTitle}>{`Commande n°${key}`}</Text>
+              <Text style={styles.cardTitle}>{`Commande #${key}`}</Text>
               <View style={styles.cardContent}>{getOrdersDetail(pack)}</View>
+
+              <Text
+                style={styles.dateRetrait}
+              >{`Retrait le ${DateTime.fromFormat(
+                pack[0].dateRetrait,
+                "yyyy-MM-dd"
+              )
+                .setLocale("fr")
+                .toFormat("dd MMMM yyyy")}`}</Text>
             </View>
           );
         })}
@@ -104,5 +114,11 @@ const styles = StyleSheet.create({
     fontFamily: "GibsonB",
     fontSize: 15,
     color: "#40693E",
+  },
+  dateRetrait: {
+    fontFamily: "GibsonR",
+    fontSize: 15,
+    color: "black",
+    marginTop: 10,
   },
 });

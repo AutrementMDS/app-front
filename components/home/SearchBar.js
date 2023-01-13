@@ -20,6 +20,7 @@ export const SearchBar = (props) => {
         <TextInput
           style={styles.input}
           onChangeText={(text) => {
+            props.onSearchChange(text);
             setSearch(text);
           }}
           value={search}

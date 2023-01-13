@@ -91,7 +91,12 @@ export function PanierScreen({ route, navigation }) {
             }}
             animated={true}
           />
-          <Image source={{ uri: item.image }} style={styles.image}></Image>
+          <Image
+            source={{
+              uri: `http://51.210.104.99:1556${item.image.data.attributes.url}`,
+            }}
+            style={styles.image}
+          ></Image>
 
           <LinearGradient
             colors={["rgba(0,0,0,0.1)", "rgba(0,0,0,0.8)"]}
@@ -173,19 +178,57 @@ export function PanierScreen({ route, navigation }) {
     );
   }
 
+  let date = new Date();
+  let actualDay = date.getDate(); // - 1; // like 13 janvier
+  let actualDayInWeek = date.getDay(); // - 1; // like 13 janvier
+
+  if (actualDayInWeek <= 3) {
+    let path = 5 - actualDayInWeek;
+    date.setDate(actualDay + path);
+  } else {
+    let path = 5 - actualDayInWeek + 7;
+    date.setDate(actualDay + path);
+  }
+
   return (
-    <FlatList
-      contentContainerStyle={{ paddingBottom: 80 }}
-      data={products}
-      renderItem={PanierProduct}
-      keyExtractor={(item, index) => String(index)}
-      showsHorizontalScrollIndicator={false}
-      showsVerticalScrollIndicator={false}
-    />
+    <>
+      <View style={styles.livraisonContainer}>
+        <View>
+          <Text
+            style={styles.livraisonText}
+          >{`📆 Prochaine date de retrait le ${date.toLocaleDateString(
+            "fr-FR"
+          )}`}</Text>
+        </View>
+      </View>
+      <FlatList
+        contentContainerStyle={{ paddingBottom: 80 }}
+        data={products}
+        renderItem={PanierProduct}
+        keyExtractor={(item, index) => String(index)}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+      />
+    </>
   );
 }
 
 const styles = StyleSheet.create({
+  livraisonContainer: {
+    position: "relative",
+    margin: 10,
+    padding: 10,
+    marginTop: 10,
+    marginBottom: 5,
+    backgroundColor: "#40693E",
+    borderRadius: 10,
+    overflow: "hidden",
+  },
+  livraisonText: {
+    fontSize: 15,
+    color: "#FAFAFA",
+    fontFamily: "GibsonB",
+  },
   productContainer: {
     height: Dimensions.get("window").height / 4,
     position: "relative",
