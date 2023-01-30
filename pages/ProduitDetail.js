@@ -35,7 +35,7 @@ export const ProduitDetail = ({ route, navigation }) => {
           >
             <Image
               source={{
-                uri: `http://51.210.104.99:1556${product.image.data.attributes.url}`,
+                uri: `https://back.autrement.site${product.image.data.attributes.url}`,
               }}
               style={styles.image}
             ></Image>

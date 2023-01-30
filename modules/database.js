@@ -3,7 +3,7 @@ import { getItem, setItem, removeItem } from "../store/store.js";
 
 //const baseURL = "https://be23-212-106-119-45.eu.ngrok.io/";
 //const baseURL = "http://172.24.232.115:1337/";
-const baseURL = "http://51.210.104.99:1556/api/";
+const baseURL = "https://back.autrement.site/api/";
 
 function refactorObject(obj) {
   let nObj = {};
