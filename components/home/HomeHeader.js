@@ -22,14 +22,26 @@ export const HomeHeader = (props) => {
           <Image source={logo} alt="logo" style={styles.image} />
           <Text style={styles.appName}>Autrement</Text>
         </View>
-        <SearchBar />
+        <SearchBar onSearchChange={props.onSearchChange} />
       </View>
     );
   } else {
     return (
-      <View style={styles.container}>
-        {/* <Image source={logo} alt="logo" style={styles.image} /> */}
-        <SearchBar onSearchChange={props.onSearchChange} />
+      <View style={{ ...styles.containerWeb }}>
+        <View style={styles.containerImage}>
+          <Image source={logo} alt="logo" style={styles.image} />
+          <Text style={styles.appName}>Autrement</Text>
+        </View>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
+        >
+          <SearchBar onSearchChange={props.onSearchChange} />
+        </View>
       </View>
     );
   }
@@ -39,9 +51,16 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
     justifyContent: "flex-start",
     alignItems: "center",
+    marginBottom: 5,
+    width: "100%",
+  },
+  containerWeb: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
     marginBottom: 5,
     width: "100%",
   },

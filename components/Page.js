@@ -6,7 +6,7 @@ export const Page = (props) => {
   if (isOnWeb()) {
     style = { padding: 10, flex: 1 };
   } else {
-    style = { padding: 10, paddingTop: 50, paddingBottom: 50, flex: 1 };
+    style = { padding: 10, /* paddingTop: 50 */ paddingBottom: 50, flex: 1 };
   }
 
   return <SafeAreaView style={style}>{props.children}</SafeAreaView>;

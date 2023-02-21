@@ -164,7 +164,7 @@ export async function getOrders(jwt, userID) {
         return res.data.data;
       }
     })
-    .catch((err) => {
+    .catch(async (err) => {
       console.log(err);
     });
 }

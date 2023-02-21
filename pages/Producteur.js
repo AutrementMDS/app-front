@@ -63,7 +63,10 @@ export const ProducteurScreen = ({ route, navigation }) => {
               />
             ) : (
               <Avatar.Text
-                backgroundColor="#40693E"
+                color="white"
+                style={{
+                  backgroundColor: "#40693E",
+                }}
                 size={70}
                 label={`${producteur?.prenom.substr(0, 1).toUpperCase()}`}
               />
@@ -104,16 +107,24 @@ export const ProducteurScreen = ({ route, navigation }) => {
                   height: Dimensions.get("window").height / 3,
                 }}
               >
-                <Image
-                  style={styles.image}
-                  source={{
-                    uri: item.attributes.link,
-                  }}
-                />
+                {isOnWeb() ? (
+                  <Image
+                    style={styles.image}
+                    source={{
+                      uri: item.attributes.link,
+                    }}
+                  />
+                ) : (
+                  <View key={index} style={styles.imageContainer}>
+                    <Image
+                      style={styles.image}
+                      source={{
+                        uri: item.attributes.link,
+                      }}
+                    />
+                  </View>
+                )}
               </View>
-              // <View key={index} style={styles.imageContainer}>
-
-              // </View>
             );
           }}
           keyExtractor={(item) => item.id}
@@ -192,7 +203,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   imageContainer: {
-    width: Dimensions.get("window").width - 40,
+    width: Dimensions.get("window").width / 1.15,
     height: 200,
     marginTop: 10,
     borderRadius: 10,

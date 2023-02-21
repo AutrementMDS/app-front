@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { Avatar, Card, Divider } from "react-native-paper";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { isOnWeb } from "../modules/utils";
 
 export const ProduitDetail = ({ route, navigation }) => {
   let { product } = route.params;
@@ -27,7 +28,9 @@ export const ProduitDetail = ({ route, navigation }) => {
         >
           <Ionicons name="add-outline" size={28} color="white" />
         </TouchableOpacity>
-        <Card style={styles.cardContainer}>
+        <Card
+          style={isOnWeb() ? styles.cardContainerWeb : styles.cardContainer}
+        >
           <View
             style={{
               height: Dimensions.get("window").height / 4,
@@ -80,7 +83,10 @@ export const ProduitDetail = ({ route, navigation }) => {
                     />
                   ) : (
                     <Avatar.Text
-                      backgroundColor="#40693E"
+                      color="white"
+                      style={{
+                        backgroundColor: "#40693E",
+                      }}
                       size={70}
                       label={`${product.producteur.data.attributes.prenom.substr(
                         0,
@@ -123,6 +129,16 @@ export const ProduitDetail = ({ route, navigation }) => {
   );
 };
 const styles = StyleSheet.create({
+  // mobileContainer: {
+  //   width: "100%",
+  //   height: "80vh",
+  // },
+  webContainer: {
+    width: "80%",
+    marginLeft: "auto",
+    marginRight: "auto",
+    minHeight: "80vh",
+  },
   container: {
     flex: 1,
   },
@@ -158,6 +174,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  cardContainerWeb: {
+    marginBottom: 30,
+    backgroundColor: "transparent",
+    elevation: 0,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "80%",
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   image: {
     elevation: 3,

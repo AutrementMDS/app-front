@@ -7,6 +7,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { FlatList } from "react-native";
 import { CustomButton } from "../components/CustomButton";
 import { useFocusEffect } from "@react-navigation/native";
+import { isOnWeb } from "../modules/utils";
 
 export function PanierScreen({ route, navigation }) {
   const [products, setProducts] = React.useState([]);
@@ -191,7 +192,7 @@ export function PanierScreen({ route, navigation }) {
   }
 
   return (
-    <>
+    <div style={isOnWeb() ? styles.webContainer : {}}>
       <View style={styles.livraisonContainer}>
         <View>
           <Text
@@ -209,11 +210,16 @@ export function PanierScreen({ route, navigation }) {
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
       />
-    </>
+    </div>
   );
 }
 
 const styles = StyleSheet.create({
+  webContainer: {
+    width: "30%",
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
   livraisonContainer: {
     position: "relative",
     margin: 10,
