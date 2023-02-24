@@ -59,11 +59,12 @@ export const getCustomQuery = async (jwt, query) => {
 /**
  * Get all products from a producteur
  */
-export async function getProductsByProducteur() {
+export async function getProductsByProducteur(id) {
   let user = await getUser();
   let pro = await axios
     .get(
-      baseURL + "products?populate=*&filters[producteur][id][$eq]=" + user.id,
+      baseURL + "products?populate=*&filters[producteur][id][$eq]=" + id ??
+        user.id,
       {
         headers: { Authorization: "Bearer " + user.jwt },
       }

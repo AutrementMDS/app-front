@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "app-front",
-    "slug": "app-front",
-    "version": "1.0.0",
+    "name": "Autrement",
+    "slug": "Autrement",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -14,19 +14,29 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
     "android": {
-      "permissions": ["ACCESS_COARSE_LOCATION"],
+      "permissions": [
+        "ACCESS_COARSE_LOCATION"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.just1bridou.Autrement"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "839006d3-5d24-4555-8e81-6f06314c8cc9"
+      }
     }
   }
 }

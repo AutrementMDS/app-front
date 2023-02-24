@@ -14,6 +14,11 @@ import { isOnWeb } from "../modules/utils";
 
 export const ProduitDetail = ({ route, navigation }) => {
   let { product } = route.params;
+  function getNote(product) {
+    let r = parseFloat(product.review);
+    r ? (r = r.toFixed(1)) : (r = "-");
+    return r;
+  }
   return (
     <>
       <View style={styles.container}>
@@ -56,9 +61,7 @@ export const ProduitDetail = ({ route, navigation }) => {
             </View>
             <View style={styles.noteContainer}>
               <Text style={styles.note}>
-                {(product.review == -1
-                  ? "-"
-                  : parseFloat(product.review).toFixed(1)) + "/5"}
+                {product.review == -1 ? "-" : getNote(product) + "/5"}
               </Text>
             </View>
           </View>

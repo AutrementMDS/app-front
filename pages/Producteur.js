@@ -5,20 +5,70 @@ import {
   Image,
   StyleSheet,
   Dimensions,
-  TouchableOpacity,
   ScrollView,
   FlatList,
-  Platform,
+  Pressable,
 } from "react-native";
-import { Avatar, Card, Divider } from "react-native-paper";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { Page } from "../components/Page";
-import { getProducteurImages } from "../modules/database";
+import { Avatar } from "react-native-paper";
+import {
+  getProducteurImages,
+  getProductsByProducteur,
+} from "../modules/database";
 import { isOnWeb } from "../modules/utils";
+import { useFocusEffect } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
+import { CustomButton } from "../components/CustomButton";
+
+const Product = ({ navigation, item, index }) => {
+  return (
+    <Pressable
+      onPress={() => {
+        navigation.navigate("ProduitDetail", { product: item });
+      }}
+    >
+      <View style={styles.productContainer}>
+        <Image
+          source={{
+            uri: `https://back.autrement.site${item.image.data.attributes.url}`,
+          }}
+          style={styles.image}
+        ></Image>
+
+        <LinearGradient
+          colors={["rgba(0,0,0,0.1)", "rgba(0,0,0,0.8)"]}
+          style={styles.fade}
+        />
+        <View style={styles.info}>
+          <View
+            style={{
+              width: "100%",
+            }}
+          >
+            <Text style={styles.name}>{item.name}</Text>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Text style={styles.price}>{`${item.price}€ / ${
+                item.pricetype.data.attributes.name.charAt(0).toUpperCase() +
+                item.pricetype.data.attributes.name.slice(1)
+              }`}</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </Pressable>
+  );
+};
 
 export const ProducteurScreen = ({ route, navigation }) => {
   const { producteur, producteurID } = route.params;
   const [images, setImages] = React.useState([]);
+  const [products, setProducts] = React.useState([]);
 
   React.useEffect(() => {
     /**
@@ -43,6 +93,65 @@ export const ProducteurScreen = ({ route, navigation }) => {
   async function getImages() {
     let images = await getProducteurImages(producteurID);
     setImages(images);
+  }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchProducts();
+    }, [])
+  );
+
+  async function fetchProducts() {
+    let products = await getProductsByProducteur(producteurID);
+    setProducts(products);
+  }
+
+  function getProducteurProduct() {
+    if (isOnWeb()) {
+      return (
+        <FlatList
+          numColumns={3}
+          data={products}
+          renderItem={({ item, index }) => {
+            return (
+              <>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "column",
+                    margin: 5,
+                    width: Dimensions.get("window").width / 3,
+                    height: Dimensions.get("window").height / 3,
+                  }}
+                >
+                  <Product navigation={navigation} item={item} index={index} />
+                </View>
+              </>
+            );
+          }}
+          keyExtractor={(item) => item.id}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+        />
+      );
+    } else {
+      return (
+        <FlatList
+          contentContainerStyle={{ paddingBottom: 80 }}
+          data={products}
+          renderItem={({ item, index }) => {
+            return (
+              <>
+                <Product navigation={navigation} item={item} index={index} />
+              </>
+            );
+          }}
+          keyExtractor={(item) => item.id}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+        />
+      );
+    }
   }
 
   /**
@@ -131,6 +240,10 @@ export const ProducteurScreen = ({ route, navigation }) => {
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
         />
+
+        <Text style={styles.contentTitle}>SES PRODUITS</Text>
+
+        {getProducteurProduct()}
         {/* {images.map((image, index) => {
           return (
             <View key={index} style={styles.imageContainer}>
@@ -218,5 +331,75 @@ const styles = StyleSheet.create({
   },
   avatar: {
     marginRight: 10,
+  },
+
+  productContainer: {
+    height: Dimensions.get("window").height / 3,
+    position: "relative",
+    margin: 5,
+    marginTop: 15,
+    borderRadius: 10,
+  },
+  fade: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    height: "50%",
+    borderRadius: 10,
+  },
+  cardContainer: {
+    marginBottom: 30,
+    backgroundColor: "transparent",
+    elevation: 0,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  image: {
+    borderRadius: 10,
+    elevation: 3,
+    flex: 1,
+    width: null,
+    height: null,
+    resizeMode: "cover",
+  },
+  info: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "transparent",
+    padding: 10,
+    position: "absolute",
+    width: "100%",
+    bottom: 0,
+  },
+  flex: {
+    flex: 1,
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  name: {
+    fontSize: 25,
+    color: "#FAFAFA",
+    fontFamily: "GibsonB",
+  },
+  price: {
+    fontSize: 22,
+    color: "#FAFAFA",
+    fontFamily: "GibsonR",
+  },
+  emptyProductsContainer: {
+    display: "flex",
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height / 2,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyProducts: {
+    textAlign: "center",
+    fontFamily: "GibsonB",
+    color: "#40693E",
   },
 });

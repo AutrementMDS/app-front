@@ -44,7 +44,9 @@ export function CompteScreen({ route, navigation }) {
           <View style={styles.personal_info}>
             <View>
               <Text style={styles.personal_info_name}>
-                {`${user?.username}`}
+                {user?.prenom && user?.nom
+                  ? `${user.prenom} ${user.nom}`
+                  : user?.username}
               </Text>
             </View>
             <View>
